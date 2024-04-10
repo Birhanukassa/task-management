@@ -1,0 +1,11 @@
+/home/birhanu/WGU-BS-CS/intro-to-programming-java/taskmanager/taskmanager-core/src/main/java/com/github/birhanukassa/taskmanagement/display/TaskManagerInterface.java
+/home/birhanu/WGU-BS-CS/intro-to-programming-java/taskmanager/taskmanager-core/src/main/java/com/github/birhanukassa/taskmanagement/commands/CreateTaskCommand.java
+/home/birhanu/WGU-BS-CS/intro-to-programming-java/taskmanager/taskmanager-core/src/main/java/com/github/birhanukassa/taskmanagement/App.java
+/home/birhanu/WGU-BS-CS/intro-to-programming-java/taskmanager/taskmanager-core/src/main/java/com/github/birhanukassa/taskmanagement/commands/TaskCommand.java
+/home/birhanu/WGU-BS-CS/intro-to-programming-java/taskmanager/taskmanager-core/src/main/java/com/github/birhanukassa/taskmanagement/commands/PriorityQueueCommand.java
+/home/birhanu/WGU-BS-CS/intro-to-programming-java/taskmanager/taskmanager-core/src/main/java/com/github/birhanukassa/taskmanagement/commands/Task.java
+/home/birhanu/WGU-BS-CS/intro-to-programming-java/taskmanager/taskmanager-core/src/main/java/com/github/birhanukassa/taskmanagement/commands/PrioritizeTaskCommand.java
+/home/birhanu/WGU-BS-CS/intro-to-programming-java/taskmanager/taskmanager-core/src/main/java/com/github/birhanukassa/taskmanagement/commands/NameValue.java
+/home/birhanu/WGU-BS-CS/intro-to-programming-java/taskmanager/taskmanager-core/src/main/java/com/github/birhanukassa/taskmanagement/display/DisplayImpl.java
+/home/birhanu/WGU-BS-CS/intro-to-programming-java/taskmanager/taskmanager-core/src/main/java/com/github/birhanukassa/taskmanagement/commands/GetInitializedVars.java
+/home/birhanu/WGU-BS-CS/intro-to-programming-java/taskmanager/taskmanager-core/src/main/java/com/github/birhanukassa/taskmanagement/commands/ScheduleTaskCommand.java

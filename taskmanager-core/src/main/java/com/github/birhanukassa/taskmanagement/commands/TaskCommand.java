@@ -1,6 +1,8 @@
-package com.commands;
+package com.github.birhanukassa.taskmanagement.commands;
+
 import java.util.List;
 
-public interface TaskCommand {
-    public abstract List<Task> execute(List<Task> tasks);
+interface TaskCommand<T> {
+    List<T> execute(List<T> task);
 }
+

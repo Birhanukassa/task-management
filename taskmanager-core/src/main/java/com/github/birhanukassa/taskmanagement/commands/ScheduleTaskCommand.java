@@ -1,9 +1,9 @@
-package com.commands;
+package com.github.birhanukassa.taskmanagement.commands;
+import java.util.List;
 
-public class ScheduleTaskCommand implements TaskCommand {
 
-    @Override
-    public Task execute(List<Task> tasks) {
+
+public class ScheduleTaskCommand implements TaskCommand<Task> {
 
         /* 
         - If input `M`
@@ -11,26 +11,29 @@ public class ScheduleTaskCommand implements TaskCommand {
         - For each task in `Tasks` and NOT E
         -  For current task
         - Ask user if they would like to manage deadlines `MD` or intervals `I`or `E for exit`
-        - Save input
+            -  System.out.print("Do you want to set up time (T) or interval (I) or exit (E) ")
+                 - Save input
             - // deadline management
-                - If input is MD
+                - If input is T
                     - call a method to allow user to readjust day/time if they want to.
-                    - 
-            - // recurring tasks: allow users to set up a recurring interval
-                - If input is I
-                    - Ask user if it's daily, weekly monthly or specific days/hours
-                    - set intervals for each recurring task
+                 - else ...
+                        
+                    - // recurring tasks: allow users to set up a recurring interval
+                        - If input is I
+                            - Ask user if it's daily, weekly monthly or specific days/hours
+                            - set intervals for each recurring task
 
-        - Ask user if they want to add tasks, prioritizing tasks or managing Tasks
+        - Ask user if they still want to add tasks, prioritizing tasks or managing Tasks
         - Save the input to `input`
 
         - // add final greetings  
         */
         
 
-
-        return tasks;
-        
+    @Override
+    public List<Task> execute(List<Task> task) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'execute'");
     }
     
 }

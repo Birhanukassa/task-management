@@ -1,4 +1,9 @@
+package com.github.birhanukassa.taskmanagement.commands;
+import com.github.birhanukassa.taskmanagement.util.GetInitializedVars;
+
 import java.time.ZonedDateTime;
+import java.util.List;
+
 
 public class Task {
     private String name;
@@ -14,9 +19,9 @@ public class Task {
 
     private boolean isCompleted;
 
-    public Task(String name) {
-        this(name, null);
-    }
+    // public Task(String name) {
+    //     this(name, null);
+    // }
 
     public Task(String name, String description) {
         this.name = name;

@@ -1,10 +1,8 @@
-package com.commands;
+package com.github.birhanukassa.taskmanagement.commands;
+import com.github.birhanukassa.taskmanagement.display.DisplayImpl;
 
 import java.util.List;
 import java.util.Optional;
-
-import com.display.DisplayImpl;
-import com.display.TaskManagerInterface;
 
 
 public class PriorityQueueCommand {
@@ -17,8 +15,7 @@ public class PriorityQueueCommand {
     }
 
     public List<Task> prioritizeTasks(List<Task> tasks) {
-      
-        TaskManagerInterface taskManager = new DisplayImpl();
+        DisplayImpl taskManager = new DisplayImpl();
         
          // Define maybeSelectedTask (assuming it's an Optional<Task>)
          Optional<Task> maybeSelectedTask = Optional.empty(); // Initialize it with an empty Optional

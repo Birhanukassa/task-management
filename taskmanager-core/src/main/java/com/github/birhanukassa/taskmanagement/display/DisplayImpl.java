@@ -1,11 +1,11 @@
-package com.display;
+package com.github.birhanukassa.taskmanagement.display;
+import com.github.birhanukassa.taskmanagement.commands.*;
 
 import java.util.Scanner;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-import com.commands.Task;
 
 public class DisplayImpl implements TaskManagerInterface {
 

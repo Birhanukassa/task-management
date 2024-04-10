@@ -1,4 +1,4 @@
-package com.commands;
+package com.github.birhanukassa.taskmanagement.commands;
 
 public class NameValue {
     private String name;

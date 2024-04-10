@@ -1,13 +1,13 @@
-package com.commands;
+package com.github.birhanukassa.taskmanagement.commands;
+import com.github.birhanukassa.taskmanagement.display.*;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
-import com.display.DisplayImpl;
-import com.display.TaskManagerInterface;
 
-public class PrioritizeTaskCommand implements TaskCommand {
+
+public class PrioritizeTaskCommand implements TaskCommand<Task> {
 
     @Override
     public List<Task> execute(List<Task> tasks) {
