@@ -1,7 +1,8 @@
 package com.github.birhanukassa.taskmanagement.util;
-import com.github.birhanukassa.taskmanagement.commands.NameValue;
-
 import java.util.List;
+
+import com.github.birhanukassa.taskmanagement.models.NameValue;
+
 import java.util.ArrayList;
 import java.lang.reflect.Field;
 

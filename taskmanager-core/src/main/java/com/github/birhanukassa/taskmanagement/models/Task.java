@@ -1,5 +1,6 @@
-package com.github.birhanukassa.taskmanagement.commands;
+package com.github.birhanukassa.taskmanagement.models;
 import com.github.birhanukassa.taskmanagement.util.GetInitializedVars;
+
 
 import java.time.ZonedDateTime;
 import java.util.List;

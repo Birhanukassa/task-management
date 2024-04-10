@@ -1,9 +1,11 @@
 package com.github.birhanukassa.taskmanagement.commands;
 import java.util.List;
 
+import com.github.birhanukassa.taskmanagement.models.Task;
 
 
-public class ScheduleTaskCommand implements TaskCommand<Task> {
+
+public class TaskSchedulerCommand implements TaskCommand<Task> {
 
         /* 
         - If input `M`
