@@ -1,7 +1,10 @@
 package com.github.birhanukassa.taskmanagement.commands;
 
+import com.github.birhanukassa.taskmanagement.display.*;
+import com.github.birhanukassa.taskmanagement.commands.*;
+import com.github.birhanukassa.taskmanagement.models.*;
 import com.github.birhanukassa.taskmanagement.util.*;
-import com.github.birhanukassa.taskmanagement.models.Task;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -33,7 +36,9 @@ public class PrioritizeTaskCommand implements TaskCommand<Task> {
                 System.out.println("The calculated priority score is: " + score);
 
             } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter numeric values for importance and urgency.");
+                System.out.println(     
+                "Invalid input. Please enter numeric values for importance and urgency.")
+                ;
             }
 
             scanner.close();
@@ -64,7 +69,7 @@ public class PrioritizeTaskCommand implements TaskCommand<Task> {
         
         });
 
-        if (!optionalTask.isPresent()) {
+        if (!(optionalTask.isPresent())) {
             System.out.println("Thank you. You are exiting prioritizing tasks.");
         }
 

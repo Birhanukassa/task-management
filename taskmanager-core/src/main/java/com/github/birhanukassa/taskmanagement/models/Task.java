@@ -1,4 +1,5 @@
 package com.github.birhanukassa.taskmanagement.models;
+
 import com.github.birhanukassa.taskmanagement.util.GetInitializedVars;
 
 

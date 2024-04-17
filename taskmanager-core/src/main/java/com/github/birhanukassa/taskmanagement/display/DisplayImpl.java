@@ -1,30 +1,31 @@
 package com.github.birhanukassa.taskmanagement.display;
-import com.github.birhanukassa.taskmanagement.models.Task;
+import com.github.birhanukassa.Tmanagement.models.ItemList;
+import com.github.birhanukassa.taskmanagement.models.*;
 
-import java.util.Scanner;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 
-public class DisplayImpl implements TaskManagerInterface {
-
+public class DisplayImpl implements TaskManagerInterface<Task> {
+ 
     @Override
-    public void displaySortedTasks(List<Task> tasks) {
-        tasks.sort(Comparator.comparingDouble(Task::getPriorityScore).reversed());
+    public void sortThenDisplayTasks(ItemList<ArrayList<Task>>  taskList) {
+        List<Task> tasks = taskList.getTasks();
+        taskList.sort(Comparator.comparingDouble(Task::getPriorityScore).reversed());
        
         System.out.println("Displaying sorted tasks:");
       
-        for (int i = 0; i < tasks.size(); i++) {
-            System.out.println("Key: " + i + ", Task: " + tasks.get(i).getTaskName() +
-                               ", Priority Score: " + tasks.get(i).getPriorityScore());
+        for (int i = 0; i < task.size(); i++) {
+            System.out.println("Key: " + i + ", Task: " + task.get(i).getTaskName() +
+                               ", Priority Score: " + task.get(i).getPriorityScore());
         }
     }
 
     @Override
-    public void displayPriorityMatrix(List<Task> tasks) {
+    public void displayPriorityMatrix(ItemList<Task> task) {
         System.out.println("Displaying priority matrix:");
-        for (Task task : tasks) {
+        for (Task task : task) {
             System.out.println("Task: " + task.getTaskName() + ", Priority Score: " + task.getPriorityScore());
         }
     }
@@ -69,4 +70,6 @@ public class DisplayImpl implements TaskManagerInterface {
     //     scanner.close();
     //     return selectedTask;
     //
+
+  
 }
