@@ -1,13 +1,12 @@
 package com.github.birhanukassa.taskmanagement.display;
 
-import com.github.birhanukassa.Tmanagement.models.ItemList;
-import com.github.birhanukassa.taskmanagement.models.*;
+import java.util.List;
 
 public interface TaskManagerInterface<E> {
 
-	void sortThenDisplayTasks(ItemList<Task> sharedTaskList);
+	void sortThenDisplayTasks(List<E> sharedTaskList);
 
-    void displayPriorityMatrix(ItemList<Task> taskList);
+    void displayPriorityMatrix(List<E> sharedTaskList);
 
 }
 
