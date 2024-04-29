@@ -6,10 +6,10 @@ import com.github.birhanukassa.taskmanagement.models.NameValue;
 import java.util.ArrayList;
 import java.lang.reflect.Field;
 
-public class GetInitializedVars {
+public class FieldValueMapper {
 
     // Private constructor to prevent instantiation
-    private GetInitializedVars() {
+    private FieldValueMapper() {
         throw new UnsupportedOperationException(
                 "This is a utility class and cannot be instantiated");
     }

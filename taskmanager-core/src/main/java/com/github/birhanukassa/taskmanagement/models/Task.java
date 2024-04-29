@@ -1,6 +1,6 @@
 package com.github.birhanukassa.taskmanagement.models;
 
-import com.github.birhanukassa.taskmanagement.util.GetInitializedVars;
+import com.github.birhanukassa.taskmanagement.util.FieldValueMapper;
 
 
 import java.time.ZonedDateTime;
@@ -13,7 +13,7 @@ public class Task {
     private TaskStatus status;
     private String location; // could move to different class
 
-    private double priorityScore = 0;
+    private double priorityLevel = 0;
 
     private ZonedDateTime startTime; // could move to different class
     private ZonedDateTime intervalDate; // could move to different class
@@ -57,16 +57,16 @@ public class Task {
     }
 
     public void setPriorityScore(double priorityScore) {
-        this.priorityScore = priorityScore;
+        this.priorityLevel = priorityScore;
     }
 
     public double getPriorityScore() {
-        return priorityScore;
+        return priorityLevel;
     }
 
     @Override
     public String toString() {
-        List<NameValue> vars = GetInitializedVars.getInitializedVars(this);
+        List<NameValue> vars = FieldValueMapper.getInitializedVars(this);
 
         String output = "";
 
