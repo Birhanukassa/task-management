@@ -12,5 +12,5 @@ Welcome to the Task Management repository! This project aims to provide a smooth
 Clone the repository and follow the setup instructions to get started:
 ```bash
 git clone https://github.com/yourusername/task-management.git
-cd Breadcrumbstask-management
+cd task-management
 # Setup instructions go here
