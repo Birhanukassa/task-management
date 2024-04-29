@@ -14,7 +14,7 @@ Clone the repository and follow the setup instructions to get started:
 git clone https://github.com/yourusername/task-management.git
 cd task-management
 # Setup instructions go here
-
+```
 
 
 We have exciting news to share about task management! We're working on an extended feature set to create a comprehensive task management solution for individual productivity and team collaboration. Here's what you can expect from our upcoming features:
