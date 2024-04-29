@@ -41,4 +41,4 @@ As we continue developing task management, we are excited to share our roadmap o
 - **Predictive Task Allocation**: Use machine learning to predict task assignments based on team members' skills and workload.
 - **Gamification Elements**: Introduce gamification to motivate and engage users, with rewards for task completion and productivity milestones.
 
-We are committed to continuous improvement and innovation and welcome feedback from our users to help shape the future of Breadcrumbstask-Management. Stay tuned for updates as we bring these exciting features to life!
+We are committed to continuous improvement and innovation and welcome feedback from our users to help shape the future of stask-Management. Stay tuned for updates as we bring these exciting features to life!
