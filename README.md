@@ -20,7 +20,7 @@ cd task-management
 
 ## Extended Feature Set for project task management system 
 
-As we continue to develop Breadcrumbstask-Management, we are excited to share our roadmap of features that we plan to implement. Our goal is to create a comprehensive task management solution that caters to a wide range of needs, from individual productivity to team collaboration. Here's what you can look forward to:
+As we continue to develop task-Management, we are excited to share our roadmap of features that we plan to implement. Our goal is to create a comprehensive task management solution that caters to a wide range of needs, from individual productivity to team collaboration. Here's what you can look forward to:
 
 ### Upcoming Features
 
