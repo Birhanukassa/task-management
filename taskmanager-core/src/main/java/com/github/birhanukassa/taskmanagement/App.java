@@ -5,10 +5,8 @@ import com.github.birhanukassa.taskmanagement.commands.*;
 import com.github.birhanukassa.taskmanagement.models.*;
 import com.github.birhanukassa.taskmanagement.util.*;
 
-
 import java.util.Optional;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 
@@ -20,10 +18,8 @@ public class App {
             
             TaskList taskList = TaskList.INSTANCE;
             List<Task> sharedTaskList = taskList.getTasks();
-            
             SelectTask selector = new SelectTask();
-            Optional<Task> currTask = selector.taskSelectorOptional(sharedTaskList);
- 
+            
             if (sharedTaskList.size() > 0) {
 
                 TaskManagerInterface<Task> display = new DisplayImpl();
@@ -36,60 +32,51 @@ public class App {
                 String userInput = scanner.nextLine().toUpperCase();
 
                 switch (userInput) {
+
                     case "T":
-                        Task task;
-
-                        System.out.println("You chose creating a Task.");
-
-                        System.out.print("Enter the name of the task: ");
-                        String taskName = scanner.nextLine();
-
-                        System.out.print("Enter the description of the task: ");
-                        String taskDescription = scanner.nextLine();
-
-                        task = new Task(taskName, taskDescription);
-                        System.out.print("You create a new task: \n" + task.toString());
-
-                        sharedTaskList.addItem(task);
-
+                        TaskFactory taskFactory = new TaskFactory();
+                        Task newTask = taskFactory.createTask();
+                        sharedTaskList.add(newTask);
                     break;
 
                     case "P":
                         System.out.println("You chose Prioritizing a task.");
 
-
-                        SelectTask selector = new SelectTask();
-
-                        selector.taskSelectorOptional(sharedTaskList);
+                        Optional<Task> currTask = selector.taskSelectorOptional(sharedTaskList);
                         
                     case "M":
                         // time, date.
                         System.out.println("You chose Managing a task.");
 
                         TaskSchedulerCommand schedual = new TaskSchedulerCommand();
-                        newTask = schedual.execute(tasks);
+                        // give a change to select the desired task 
+                        // create an algorithm that does appropriate action to the current case 
+                    
+                        // Optional<Task> currTask = selector.taskSelectorOptional(sharedTaskList);
 
-                        if (newTask.getTime() != null && task.getInterval() != null) {
-                            String taskName = scanner.nextLine();
+                        // newTask = schedule.execute(tasks);
 
-                            System.out.print("Enter the description of the task: ");
-                            String taskDescription = scanner.nextLine();
+                        // if (newTask.getTime() != null && task.getInterval() != null) {
+                        //     String taskName = scanner.nextLine();
+
+                        //     System.out.print("Enter the description of the task: ");
+                        //     String taskDescription = scanner.nextLine();
         
-                            newTask = new Task(taskName, taskDescription);
-                            tasks.add(newTask);
-                            Task newTask = ScheduleTaskCommand();
-                            break;
-                        }
+                        //     newTask = new Task(taskName, taskDescription);
+                        //     tasks.add(newTask);
+                        //     Task newTask = ScheduleTaskCommand();
+                        //     break;
+                        //}
         
                     case "E":
                 
                         System.out.println("Exiting the program.");
 
                     return;
-                default:
-                    System.out.println("Invalid choice. Please try again.");
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
+                    }
                 }
-            
         } 
     }
 }

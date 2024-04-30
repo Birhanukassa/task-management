@@ -1,7 +1,9 @@
 package com.github.birhanukassa.taskmanagement.commands;
 
+import com.github.birhanukassa.taskmanagement.models.Task;
+import java.util.List;
 
-interface TaskCommand<TaskList> {
-    TaskList execute(TaskList task);
+interface TaskCommand {
+    Task execute(List<Task> tasks);
 }
 

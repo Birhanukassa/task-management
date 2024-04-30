@@ -10,7 +10,7 @@ public class InputHandler<T> {
     }
 
     public T getUserInput(String prompt, Class<T> targetType) {
-        System.out.print(prompt + ": ");
+        System.out.print(prompt);
         String userInput = scanner.nextLine();
         if (userInput == null ||  userInput.trim().isEmpty()) {
             throw new IllegalArgumentException("Input can't be empty.");
@@ -28,3 +28,4 @@ public class InputHandler<T> {
 
 
 // iTS A REFLECTION CLASS 
+// TODO: its possible to create methods that accept each input type if reflection is problematic. 

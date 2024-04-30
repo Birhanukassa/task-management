@@ -6,11 +6,11 @@ import java.util.Comparator;
 import java.util.List;
 
 public class DisplayImpl implements TaskManagerInterface<Task> {
-    private List<Task> sharedTaskList;
+  //??  private List<Task> sharedTaskList; 
 
-    public DisplayImpl(List<Task> sharedTaskList) {
-        this.sharedTaskList = sharedTaskList;
-    }
+    //?? public DisplayImpl(List<Task> sharedTaskList) {
+    //     this.sharedTaskList = sharedTaskList;
+    // }
 
     @Override
     public void sortThenDisplayTasks(List<Task> sharedTaskList) {
@@ -28,8 +28,8 @@ public class DisplayImpl implements TaskManagerInterface<Task> {
             System.out.println("Task: " + task.getTaskName() + ", Priority Score: " + task.getPriorityScore());
         }
     }
+   
 }
-
 
     
     // @Override
@@ -83,4 +83,3 @@ public class DisplayImpl implements TaskManagerInterface<Task> {
     //     return selectedTask;
     //
 
-}
