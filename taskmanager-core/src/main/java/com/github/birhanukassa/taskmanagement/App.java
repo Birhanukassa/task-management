@@ -18,9 +18,11 @@ public class App {
             
             TaskList taskList = TaskList.INSTANCE;
             List<Task> sharedTaskList = taskList.getTasks();
-            SelectTask selector = new SelectTask();
             
             if (sharedTaskList.size() > 0) {
+
+                SelectTask taskSelectorInstance = new SelectTask();
+                Optional<Task> maybeSelectedTask = taskSelectorInstance.taskSelectorOptional(sharedTaskList);
 
                 TaskManagerInterface<Task> display = new DisplayImpl();
                 display.sortThenDisplayTasks(sharedTaskList);
@@ -40,8 +42,13 @@ public class App {
                     break;
 
                     case "P":
-                        System.out.println("You chose Prioritizing a task.");
+                    // TODO 
+                    // call PrioritizeTaskCommand class to prioritize the task 
+                        // call taskSelectorOptional method to select the task to prioritize
+                        // call taskSelector method to select the task to prioritize
+                        // 
 
+                        System.out.println("You chose Prioritizing a task.");
                         Optional<Task> currTask = selector.taskSelectorOptional(sharedTaskList);
                         
                     case "M":

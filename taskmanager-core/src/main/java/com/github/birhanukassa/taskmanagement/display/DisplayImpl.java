@@ -1,23 +1,22 @@
 package com.github.birhanukassa.taskmanagement.display;
 
 import com.github.birhanukassa.taskmanagement.models.Task;
-
 import java.util.Comparator;
 import java.util.List;
 
 public class DisplayImpl implements TaskManagerInterface<Task> {
-  //??  private List<Task> sharedTaskList; 
 
-    //?? public DisplayImpl(List<Task> sharedTaskList) {
-    //     this.sharedTaskList = sharedTaskList;
-    // }
-
+ 
     @Override
     public void sortThenDisplayTasks(List<Task> sharedTaskList) {
-        sharedTaskList.sort(Comparator.comparingDouble(Task::getPriorityScore).reversed());
-        System.out.println("Displaying sorted tasks:");
-        for (Task task : sharedTaskList) {
-            System.out.println("Task: " + task.getTaskName() + ", Priority Score: " + task.getPriorityScore());
+        if (sharedTaskList.size() > 0) {
+            sharedTaskList.sort(Comparator.comparingDouble(Task::getPriorityScore).reversed());
+            System.out.println("Displaying sorted tasks:");
+            for (Task task : sharedTaskList) {
+                System.out.println("Task: " + task.getTaskName() + ", Priority Score: " + task.getPriorityScore());
+            }
+        } else {
+            System.out.println("No tasks to display. Please create a task first.");
         }
     }
 
@@ -28,19 +27,13 @@ public class DisplayImpl implements TaskManagerInterface<Task> {
             System.out.println("Task: " + task.getTaskName() + ", Priority Score: " + task.getPriorityScore());
         }
     }
-   
 }
 
-    
-    // @Override
-    // public void displayPriorityMatrix(List<TaskList> sharedTaskList) {
-    //     System.out.println("Displaying priority matrix:");
-    //     for (Task task : sharedTaskList) {
-    //         System.out.println("Task: " + task.getTaskName() + ", Priority Score: " + task.getPriorityScore());
-    //     }
-    // }
+ 
+  
 
-    
+
+
    
     // @Override
     // public Optional<Task> selectTask(List<Task> tasks) {
