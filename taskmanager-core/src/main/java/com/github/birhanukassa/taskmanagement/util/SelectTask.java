@@ -10,13 +10,17 @@ import java.util.List;
 
 public class SelectTask  {
 
-    public <T> Optional<T> taskSelectorOptional(List<T> tasks) {
+    /*
+     * For Optional return type: use the Name Value object to wrap the return value 
+     * then extract the value with conditional block to deal with this optional problem!!
+    */
+    
+    public <T extends Task> Optional<T> taskSelectorOptional(List<T> tasks) {
         Optional<T> selectedTask = Optional.empty();
         String inputKey;
 
         DisplayImpl display = new DisplayImpl();
-
-        display.displaySortedTasks(tasks); // the input is generic not tasks arrayLIst 
+        display.sortThenDisplayTasks((List<Task>) tasks); // alternative approach for casting ?? 
 
 
         Scanner scanner = new Scanner(System.in);
@@ -45,7 +49,7 @@ public class SelectTask  {
             }
 
             selectedTask = Optional.of(tasks.get(selectedTaskIndex));
-            System.out.println("Selected Task: " + selectedTask.get().getTaskName());
+            System.out.println("Selected Task: " + ((Task) selectedTask.get()).getTaskName());
 
         } while (true);
 
