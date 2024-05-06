@@ -1,33 +1,25 @@
 package com.github.birhanukassa.taskmanagement.util;
 
-import com.github.birhanukassa.taskmanagement.display.*;
-import com.github.birhanukassa.taskmanagement.commands.*;
 import com.github.birhanukassa.taskmanagement.models.*;
-
-import java.util.Optional;
-import java.util.Scanner;
 import java.util.List;
 
 public class TaskSelector {
 
-    public NameValue selectTask(List<Task> tasks) {
-        Scanner scanner = new Scanner(System.in);
-        Display display = new Display();
+    public TypedNameValue<String, Object> selectTask(List<Task> tasks) {
 
         while (true) {
-            display.sortAndDisplayTasks(tasks);
+            InputHandler handler = new InputHandler();
+            TypedNameValue<String, Object> input = handler.getUserInput(
+                    "Enter the key of the task you want to manage, or 'E' to exit: ");
+            Object value = input.getValue();
 
-            System.out.print("Enter the key of the task you want to manage, or 'E' to exit: ");
-            String inputKey = scanner.nextLine();
-
-            if ("E".equalsIgnoreCase(inputKey)) {
+            if ("E".equalsIgnoreCase((String) value)) {
                 System.out.println("Exiting task Manager.");
-                scanner.close();
-                return new NameValue("E", char.class);
+                return new TypedNameValue<>("Exit", "input", "E");
             }
 
             try {
-                int selectedTaskIndex = Integer.parseInt(inputKey, 10);
+                int selectedTaskIndex = Integer.parseInt((String) value);
 
                 if (selectedTaskIndex < 0 || selectedTaskIndex >= tasks.size()) {
                     System.out.println("Invalid key. Please enter a valid number.");
@@ -35,13 +27,10 @@ public class TaskSelector {
                 }
 
                 Task selectedTask = tasks.get(selectedTaskIndex);
-                System.out.println("Selected Task: " + selectedTask.getTaskName());
-
-                scanner.close();
-                return new NameValue(selectedTaskIndex, selectedTask.getClass());
-                
+                return new TypedNameValue<>("Task", "selectedTask", selectedTask);
             } catch (NumberFormatException e) {
-                System.out.println("Invalid key. Please enter a valid number.");
+                // If input is not a number, return it as a String
+                System.out.println("Invalid input. Please enter a valid number or 'E' to exit.");
             }
         }
     }

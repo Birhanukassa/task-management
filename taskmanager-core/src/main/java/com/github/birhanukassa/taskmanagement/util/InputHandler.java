@@ -1,32 +1,29 @@
 package com.github.birhanukassa.taskmanagement.util;
 
 import java.util.Scanner;
+import com.github.birhanukassa.taskmanagement.models.TypedNameValue;
 
-public class InputHandler<T> {
+public class InputHandler {
     private Scanner scanner;
 
     public InputHandler() {
         scanner = new Scanner(System.in);
     }
 
-    public T getUserInput(String prompt, Class<T> targetType) {
-        System.out.print(prompt);
-        String userInput = scanner.nextLine();
-        if (userInput == null || userInput.trim().isEmpty()) {
-            throw new IllegalArgumentException("Input can't be empty.");
-        }
-
-        
-        // Create an instance of the specified type (assuming it has a constructor that takes a String)
-        try {
-            return targetType.getConstructor(String.class).newInstance(userInput);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+    public TypedNameValue<String, Object> getUserInput(String message) {
+        while (true) {
+            try {
+                System.out.println(message);
+                String input = scanner.nextLine();
+                if (input.equalsIgnoreCase("E")) {
+                    scanner.close();
+                    return new TypedNameValue<>("string", "input", "E");
+                }
+                scanner.close();
+                return new TypedNameValue<>("integer", "input", Integer.parseInt(input));
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid input or 'E' to exit.");
+            }
         }
     }
 }
-
-
-// iTS A REFLECTION CLASS 
-// TODO: its possible to create methods that accept each input type if reflection is problematic. 

@@ -13,25 +13,20 @@ public class App {
     public static void main() {
 
         while (true) {
-            Scanner scanner = new Scanner(System.in);
 
             TaskList taskList = TaskList.INSTANCE;
             List<Task> sharedTaskList = taskList.getTasks();
 
             if (sharedTaskList.size() > 0) {
-
-                SelectTask taskSelectorInstance = new SelectTask();
-                Optional<Task> maybeSelectedTask = taskSelectorInstance.taskSelectorOptional(sharedTaskList);
-
                 TaskManagerInterface<Task> display = new DisplayImpl();
                 display.sortThenDisplayTasks(sharedTaskList);
 
-                System.out.print(
+                InputHandler inputHandler = new InputHandler();
+                TypedNameValue<String, Object> userInput = inputHandler.getUserInput(
                         "Enter T to create new Task, P for Prioritizing, M for Managing Tasks, or E to exit: ");
+                // how to pass the rest of args to pass for TypedNameValue<String, Object> ?
 
-                String userInput = scanner.nextLine().toUpperCase();
-
-                switch (userInput) {
+                switch (userInput.getValue()) { // ?
 
                     case "T":
                         TaskFactory taskFactory = new TaskFactory();
@@ -42,11 +37,13 @@ public class App {
                     case "P":
                         // TODO
                         // call PrioritizeTaskCommand class to prioritize the task
-                              // call taskSelectorOptional method to select the task to prioritize
-                               // call taskSelector method to select the task to prioritize
-                        //
+                        // call taskSelectorOptional method to select the task to prioritize
+                        // call taskSelector method to select the task to prioritize
+                        TaskSelector taskSelectorInstance = new TaskSelector();
+                        TypedNameValue maybeSelectedTask = taskSelectorInstance.selectTask(sharedTaskList);
+
                         PriorityQueueCommand prioritizeTaskCommand = new PriorityQueueCommand();
-                        PriorityQueueCommand();
+                        prioritizeTaskCommand.execute(sharedTaskList);
 
                     case "M":
                         // time, date.

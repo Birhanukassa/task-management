@@ -1,9 +1,10 @@
 package com.github.birhanukassa.taskmanagement.commands;
 
 import com.github.birhanukassa.taskmanagement.models.Task;
+import com.github.birhanukassa.taskmanagement.models.TypedNameValue;
+
 import java.util.List;
 
 interface TaskCommand {
-    Task execute(List<Task> tasks);
+    TypedNameValue<String, Object> execute(List<Task> tasks);
 }
-
