@@ -5,31 +5,29 @@ import java.util.List;
 
 public class TaskSelector {
 
-    public TypedNameValue<String, Object> selectTask(List<Task> tasks) {
+    public <V> TypedNameValue<V> selectTask(List<Task> tasks) {
 
         while (true) {
             InputHandler handler = new InputHandler();
-            TypedNameValue<String, Object> input = handler.getUserInput(
+            TypedNameValue<?> input = handler.getUserInput(
                     "Enter the key of the task you want to manage, or 'E' to exit: ");
-            Object value = input.getValue();
 
-            if ("E".equalsIgnoreCase((String) value)) {
+            if ("E".equalsIgnoreCase((String) input.getValue())) {
                 System.out.println("Exiting task Manager.");
-                return new TypedNameValue<>("Exit", "input", "E");
-            }
+                return new TypedNameValue<>("string", "input", (V) "E");
+
 
             try {
-                int selectedTaskIndex = Integer.parseInt((String) value);
+                int selectedIndex = Integer.parseInt((String) input.getValue());
 
-                if (selectedTaskIndex < 0 || selectedTaskIndex >= tasks.size()) {
+                if (selectedIndex < 0 || selectedIndex >= tasks.size()) {
                     System.out.println("Invalid key. Please enter a valid number.");
                     continue;
                 }
 
-                Task selectedTask = tasks.get(selectedTaskIndex);
-                return new TypedNameValue<>("Task", "selectedTask", selectedTask);
+                Task selectedTask = tasks.get(selectedIndex);
+                return new TypedNameValue<V>("Task", "selectedTask", (V) selectedTask);
             } catch (NumberFormatException e) {
-                // If input is not a number, return it as a String
                 System.out.println("Invalid input. Please enter a valid number or 'E' to exit.");
             }
         }
