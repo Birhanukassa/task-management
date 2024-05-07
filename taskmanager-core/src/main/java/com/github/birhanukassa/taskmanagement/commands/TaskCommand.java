@@ -5,6 +5,6 @@ import com.github.birhanukassa.taskmanagement.models.TypedNameValue;
 
 import java.util.List;
 
-interface TaskCommand {
-    TypedNameValue<String, Object> execute(List<Task> tasks);
+interface TaskCommand<V> {
+    TypedNameValue<V> execute(List<Task> tasks);
 }

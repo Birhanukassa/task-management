@@ -1,37 +1,53 @@
 package com.github.birhanukassa.taskmanagement.models;
 
-public class TypedNameValue<T, V> {
-    private T type;
-    private String name;
-    private V value;
+import java.util.Objects;
 
-    public TypedNameValue(T type, String name, V value) {
+public final class TypedNameValue<V> {
+    private final String type;
+    private final String name;
+    private final V value;
+
+    public TypedNameValue(String type, String name, V value) {
         this.type = type;
         this.name = name;
         this.value = value;
     }
 
-    public void setType(T type) {
-        this.type = type;
-    }
-
-    public T getType() {
+    public String getType() {
         return type;
     }
 
-    public void setName(N name) {
-        this.name = name;
-    }
-
-    public N getName() {
+    public String getName() {
         return name;
-    }
-
-    public void setValue(V value) {
-        this.value = value;
     }
 
     public V getValue() {
         return value;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        TypedNameValue<?> that = (TypedNameValue<?>) o;
+        return Objects.equals(type, that.type) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(value, that.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, name, value);
+    }
+
+    @Override
+    public String toString() {
+        return "TypedNameValue{" +
+                "type='" + type + '\'' +
+                ", name='" + name + '\'' +
+                ", value=" + value +
+                '}';
     }
 }

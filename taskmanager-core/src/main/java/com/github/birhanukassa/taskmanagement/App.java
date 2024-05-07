@@ -5,7 +5,6 @@ import com.github.birhanukassa.taskmanagement.commands.*;
 import com.github.birhanukassa.taskmanagement.models.*;
 import com.github.birhanukassa.taskmanagement.util.*;
 
-import java.util.Optional;
 import java.util.List;
 import java.util.Scanner;
 
@@ -16,17 +15,18 @@ public class App {
 
             TaskList taskList = TaskList.INSTANCE;
             List<Task> sharedTaskList = taskList.getTasks();
+            TaskSelector taskSelectorInstance = new TaskSelector();
 
             if (sharedTaskList.size() > 0) {
                 TaskManagerInterface<Task> display = new DisplayImpl();
                 display.sortThenDisplayTasks(sharedTaskList);
 
                 InputHandler inputHandler = new InputHandler();
-                TypedNameValue<String, Object> userInput = inputHandler.getUserInput(
+                TypedNameValue<String> userInput = inputHandler.getUserInput(
                         "Enter T to create new Task, P for Prioritizing, M for Managing Tasks, or E to exit: ");
                 // how to pass the rest of args to pass for TypedNameValue<String, Object> ?
 
-                switch (userInput.getValue()) { // ?
+                switch (userInput.getValue()) {
 
                     case "T":
                         TaskFactory taskFactory = new TaskFactory();
@@ -35,15 +35,22 @@ public class App {
                         break;
 
                     case "P":
-                        // TODO
-                        // call PrioritizeTaskCommand class to prioritize the task
-                        // call taskSelectorOptional method to select the task to prioritize
-                        // call taskSelector method to select the task to prioritize
-                        TaskSelector taskSelectorInstance = new TaskSelector();
-                        TypedNameValue maybeSelectedTask = taskSelectorInstance.selectTask(sharedTaskList);
+            
+                        TypedNameValue<?> maybeSelectedTask = taskSelectorInstance.selectTask(sharedTaskList);
 
-                        PriorityQueueCommand prioritizeTaskCommand = new PriorityQueueCommand();
-                        prioritizeTaskCommand.execute(sharedTaskList);
+                        if (maybeSelectedTask.getValue() instanceof Task) {
+                            Task selectedTask = (Task) maybeSelectedTask.getValue();
+                            PriorityQueueCommand<Task> prioritizeTaskCommand = new PriorityQueueCommand<>();
+                            TypedNameValue<Task> prioritizedTask = prioritizeTaskCommand.execute(sharedTaskList);
+                            
+                            sharedTaskList.add(prioritizedTask); /// TODO 
+
+                        } else {
+                            System.out.println("No task selected for prioritization.");
+                        }
+
+                        break;
+
 
                     case "M":
                         // time, date.
@@ -72,11 +79,13 @@ public class App {
                     case "E":
 
                         System.out.println("Exiting the program.");
-
                         return;
+
                     default:
                         System.out.println("Invalid choice. Please try again.");
                 }
+            } else {
+                System.out.println("No tasks found. Please create a new task.");
             }
         }
     }
