@@ -10,6 +10,8 @@ import java.util.List;
 public class Task {
     private String name;
     private String description;
+    private int importance;
+    private int urgency;
     private TaskStatus status;
     private String location; // could move to different class
 
@@ -58,6 +60,22 @@ public class Task {
 
     public void setPriorityScore(double priorityScore) {
         this.priorityLevel = priorityScore;
+    }
+    
+    public void setImportance(int importance) {
+        this.importance = importance;
+    }
+
+    public int getImprtance() {
+        return importance;
+    }
+
+    public void setUrgency(int importance) {
+        this.urgency = importance;
+    }
+
+    public int getUrgency() {
+        return urgency;
     }
 
     public double getPriorityScore() {

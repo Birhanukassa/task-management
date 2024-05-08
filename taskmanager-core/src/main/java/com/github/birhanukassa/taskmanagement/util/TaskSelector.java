@@ -9,13 +9,14 @@ public class TaskSelector {
 
         while (true) {
             InputHandler handler = new InputHandler();
-            TypedNameValue<?> input = handler.getUserInput(
+            TypedNameValue<?> input = handler.getUserInput("string",
                     "Enter the key of the task you want to manage, or 'E' to exit: ");
 
             if ("E".equalsIgnoreCase((String) input.getValue())) {
                 System.out.println("Exiting task Manager.");
                 return new TypedNameValue<>("string", "input", (V) "E");
 
+            }
 
             try {
                 int selectedIndex = Integer.parseInt((String) input.getValue());
@@ -30,6 +31,7 @@ public class TaskSelector {
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input. Please enter a valid number or 'E' to exit.");
             }
+            
         }
     }
 }

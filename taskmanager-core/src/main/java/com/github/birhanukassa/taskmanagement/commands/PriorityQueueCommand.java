@@ -14,9 +14,15 @@ public class PriorityQueueCommand<V> implements TaskCommand<V> {
     @Override
     public TypedNameValue<V> execute(List<Task> tasks) {
         InputHandler handler = new InputHandler();
-        TypedNameValue<?> input = handler.getUserInput("Rate how important the task is (1-10): ");
+
+        TypedNameValue<String> inputValue = (TypedNameValue<String>) handler.getUserInput(
+            "integer", "Rate how important the task is (1-10): ");
        
-        if ("E".equalsIgnoreCase((String) input.getValue())) {
+        TypedNameValue<Integer> urgencyInput = (TypedNameValue<Integer>) handler.getUserInput(
+            "integer", "Rate how urgent the task is (1-10): ");
+        
+
+        if ("E".equalsIgnoreCase((String) inputValue.getValue()) || "E".equalsIgnoreCase((String) inputValue.getValue()) ) {
             System.out.println("Exiting task manager.");
             return (TypedNameValue<V>) new TypedNameValue<String>("Exit", "input", "E");
 
@@ -32,13 +38,18 @@ public class PriorityQueueCommand<V> implements TaskCommand<V> {
 
         Task selectedTask = (Task) maybeSelectedTask.getValue();
         
-        TypedNameValue<Integer> urgencyInput = (TypedNameValue<Integer>) handler.getUserInput("Rate how urgent the task is (1-10): ");
+       
 
+        // inject those values to task and return task
+        // selectedTask.
         
         try {
-            importance = (Integer) input.getValue();
-            urgency = urgencyInput.getValue();
-            priorityLevel = (importance * 2) + urgency;
+            // importance = inputValue.getValue();
+            // urgency = urgencyInput.getValue();
+            // priorityLevel = (importance * 2) + urgency;
+            selectedTask.setImportance());
+            selectedTask.setUrgency(urgencyInput.getValue());
+
             System.out.println("The calculated priority score is: " + priorityLevel);
         } catch (NumberFormatException e) {
             System.out.println("Invalid input. Please enter numeric values for importance and urgency.");
@@ -49,7 +60,7 @@ public class PriorityQueueCommand<V> implements TaskCommand<V> {
 }
 
 
-/*
+/* // The box is only pack one item such as importance or urgency ... 
  * 
  * ==========================================
  * input: collection
