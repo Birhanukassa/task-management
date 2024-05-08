@@ -43,7 +43,7 @@ public class App {
                             PriorityQueueCommand<Task> prioritizeTaskCommand = new PriorityQueueCommand<>();
                             TypedNameValue<Task> prioritizedTask = prioritizeTaskCommand.execute(sharedTaskList);
                             
-                            sharedTaskList.add(prioritizedTask); /// TODO 
+                            sharedTaskList.add(prioritizedTask); // TODO 
 
                         } else {
                             System.out.println("No task selected for prioritization.");

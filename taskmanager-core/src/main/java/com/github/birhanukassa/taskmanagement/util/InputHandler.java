@@ -1,43 +1,84 @@
 package com.github.birhanukassa.taskmanagement.util;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.function.Function;
+
 import com.github.birhanukassa.taskmanagement.models.TypedNameValue;
 
 public class InputHandler {
-    private Scanner scanner;
+    private static final Map<String, Function<String, ?>> TYPE_CONVERTERS = new HashMap<>();
 
-    public InputHandler() {
-        scanner = new Scanner(System.in);
+    static {
+        TYPE_CONVERTERS.put("string", Function.identity());
+        TYPE_CONVERTERS.put("integer", Integer::valueOf);
+        TYPE_CONVERTERS.put("double", Double::valueOf);
+        TYPE_CONVERTERS.put("boolean", Boolean::valueOf);
     }
 
-    public TypedNameValue<?> getUserInput(String message) {
-        System.out.println(message);
-        String inputValue = scanner.nextLine();
+    public <T> TypedNameValue<T> getUserInput(String message, String type, Class<T> targetClass) {
+        try (Scanner scanner = new Scanner(System.in)) {
+            System.out.println(message);
+            String inputValue = scanner.nextLine();
 
-        System.out.println(
-                "Enter the type of input you want to provide (string, integer, double, boolean) or 'E' to exit: ");
-        String inputType = scanner.nextLine();
+            if (inputValue.equalsIgnoreCase("E")) {
+                return new TypedNameValue<>("string", "input", (T) "E");
+            }
 
-        if (inputValue.equalsIgnoreCase("E") || inputType.equalsIgnoreCase("E")) {
-            return new TypedNameValue<String>("string", "input", "E");
-        }
-
-        return createTypedNameValue(inputType, inputValue);
-    }
-
-    private <V> TypedNameValue<V> createTypedNameValue(String type, String value) {
-        switch (type.toLowerCase()) {
-            case "string":
-                return new TypedNameValue<>("string", "input", (V) value);
-            case "integer":
-                return new TypedNameValue<>("Integer", "input", (V) Integer.valueOf(value));
-            case "double":
-                return new TypedNameValue<>("Double", "input", (V) Double.valueOf(value));
-            default:
-                // Handle invalid type
-                System.out.println(
-                        "Invalid type. Please enter a valid type (string, integer, double, boolean) or 'E' to exit.");
+            Function<String, ?> converter = TYPE_CONVERTERS.get(type.toLowerCase());
+            if (converter == null) {
+                System.out.println("Invalid type. Please enter a valid type (string, integer, double, boolean) or 'E' to exit.");
                 return null;
+            }
+
+            T convertedValue = targetClass.cast(converter.apply(inputValue));
+            return new TypedNameValue<>(type, "input", convertedValue);
+        } catch (Exception e) {
+            System.out.println("Invalid input for type " + type + ". Please try again.");
+            return null;
         }
     }
 }
+
+
+
+// public class InputHandler {
+//     private Scanner scanner;
+
+//     public InputHandler() {
+//         scanner = new Scanner(System.in);
+//     }
+
+//     public TypedNameValue<String> getUserInput(String inputType, String message) {
+//         System.out.println(message);
+//         String inputValue = scanner.nextLine();
+
+//         if (inputValue.equalsIgnoreCase("E")) {
+//             return new TypedNameValue<String>("string", "input", "E");
+//         }
+
+//         return createTypedNameValue(inputType, inputValue);
+//     }
+
+//     private <T> TypedNameValue<T> createTypedNameValue(String type, String value) {
+//         switch (type.toLowerCase()) {
+//             case "string":
+//                 return new TypedNameValue<>("string", "input", (T) value);
+//             case "integer":
+//                 return new TypedNameValue<>("Integer", "input", (T) Integer.valueOf(value));
+//             case "double":
+//                 return new TypedNameValue<>("Double", "input", (T) Double.valueOf(value));
+//             case "boolean":
+//                 return new TypedNameValue<>("Boolean", "input", (T) Boolean.valueOf(value));
+//             default:
+//                 // Handle invalid type
+//                 System.out.println("Invalid type. Please enter a valid type (string, integer, double, boolean) or 'E' to exit.");
+//                 return null;
+//         }
+//     }
+
+}
+
+// problem: input handler should be able to handle multiple input for different classes 
+// 
