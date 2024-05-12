@@ -19,12 +19,14 @@ public class FieldValueMapper {
 
         for (Field field : instance.getClass().getDeclaredFields()) {
             try {
-                field.setAccessible(true); // Make the field accessible if it's private
+                // Make the field accessible if it's private
+                field.setAccessible(true); 
+                
                 String name = field.getName();
                 Object value = field.get(instance);
-
                 TypedNameValue nv = new TypedNameValue(name, value);
                 vars.add(nv);
+                
             } catch (IllegalAccessException e) {
                 e.printStackTrace(); 
             }
