@@ -26,7 +26,7 @@ public class FieldValueMapper {
                 TypedNameValue nv = new TypedNameValue(name, value);
                 vars.add(nv);
             } catch (IllegalAccessException e) {
-                e.printStackTrace(); // Handle the possible IllegalAccessException
+                e.printStackTrace(); 
             }
         }
 
