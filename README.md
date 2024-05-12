@@ -13,7 +13,6 @@ Clone the repository and follow the setup instructions to get started:
 ```bash
 git clone https://github.com/Birhanukassa/task-management.git
 cd task-management
-# Setup instructions go here
 ```
 
 
