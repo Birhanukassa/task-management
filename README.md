@@ -1,7 +1,9 @@
 # Task Management
 
 ## Introduction
-Welcome to the Task Management repository! This project aims to provide a smooth and efficient system for managing tasks. It is designed to assist teams in tracking tasks, managing workflows, and increasing productivity.
+
+Welcome to the Task Management repository! This project aims to provide a smooth and efficient system for managing tasks. It is designed to assist individuals and teams in tracking tasks, managing workflows, and increasing productivity.
+
 
 ## Key Features
 - **Task Creation:** Easily create tasks by adding detailed descriptions and setting deadlines.
