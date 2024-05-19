@@ -2,62 +2,49 @@ package com.github.birhanukassa.taskmanagement.commands;
 
 import com.github.birhanukassa.taskmanagement.models.*;
 import com.github.birhanukassa.taskmanagement.util.InputHandler;
-import com.github.birhanukassa.taskmanagement.util.TaskSelector;
 
-import java.util.List;
-
-public class PriorityQueueCommand<V> implements TaskCommand<V> {
-    private int importance;
-    private int urgency;
+public class PriorityQueueCommand implements TaskCommand<Task> {
+    private Integer importance;
+    private Integer urgency;
     private double priorityLevel;
 
     @Override
-    public TypedNameValue<V> execute(List<Task> tasks) {
-        InputHandler handler = new InputHandler();
-
-        TypedNameValue<String> inputValue = (TypedNameValue<String>) handler.getUserInput(
-            "integer", "Rate how important the task is (1-10): ");
-       
-        TypedNameValue<Integer> urgencyInput = (TypedNameValue<Integer>) handler.getUserInput(
-            "integer", "Rate how urgent the task is (1-10): ");
-        
-
-        if ("E".equalsIgnoreCase((String) inputValue.getValue()) || "E".equalsIgnoreCase((String) inputValue.getValue()) ) {
-            System.out.println("Exiting task manager.");
-            return (TypedNameValue<V>) new TypedNameValue<String>("Exit", "input", "E");
-
-        }
-
-        TaskSelector taskSelectorInstance = new TaskSelector();
-        TypedNameValue<?> maybeSelectedTask = taskSelectorInstance.selectTask(tasks);
-
-        if (!(maybeSelectedTask.getValue() instanceof Task)) {
-            System.out.println("Invalid selection of a task form tasks.");
-            return null;
-        }
-
-        Task selectedTask = (Task) maybeSelectedTask.getValue();
-        
-       
-
-        // inject those values to task and return task
-        // selectedTask.
-        
+    public void execute(Task task) {
+        InputHandler inputHandler = new InputHandler();
         try {
-            // importance = inputValue.getValue();
-            // urgency = urgencyInput.getValue();
-            // priorityLevel = (importance * 2) + urgency;
-            selectedTask.setImportance());
-            selectedTask.setUrgency(urgencyInput.getValue());
-
+            importance = getValidatedInput(inputHandler, "Rate how important the task is (1-10): ", 1, 10);
+            urgency = getValidatedInput(inputHandler, "Rate how urgent the task is (1-10): ", 1, 10);
+            priorityLevel = calculatePriorityLevel(importance, urgency);
+            task.setPriorityScore(priorityLevel);
             System.out.println("The calculated priority score is: " + priorityLevel);
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid input. Please enter numeric values for importance and urgency.");
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
         }
+    }
 
-        return new TypedNameValue<V>("Task", "selectedTask", (V) selectedTask);
+    private int getValidatedInput(InputHandler inputHandler, String prompt, int min, int max) throws Exception {
+        NamedTypedValue<Integer> userInput;
+        int value;
+        do {
+            userInput = inputHandler.getUserInput(prompt, Integer.class);
+            value = userInput.getValue();
+            if (value < min || value > max) {
+                System.out.println("Invalid input. Please enter a value between " + min + " and " + max + ".");
+            }
+        } while (value < min || value > max);
+        return value;
+    }
+
+    private double calculatePriorityLevel(int importance, int urgency) {
+        return (importance * 2) + urgency;
+    }
+
+    static {
+        InputHandler.registerTypeConverter(Integer.class, Integer::valueOf);
     }
 }
+
+
 
 
 /* // The box is only pack one item such as importance or urgency ... 

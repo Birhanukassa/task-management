@@ -9,7 +9,16 @@ import java.util.List;
 import java.util.Scanner;
 
 public class App {
-    public static void main() {
+    public static void main() throws Exception {
+
+     
+        InputHandler.registerTypeConverter(Integer.class, Integer::valueOf);  // ?
+        InputHandler.registerTypeConverter(Integer.class, s -> Integer.parseInt(s));
+        InputHandler.registerTypeConverter(Double.class, s -> Double.parseDouble(s));
+    
+
+        
+        InputHandler inputHandler = new InputHandler();
 
         while (true) {
 
@@ -21,10 +30,11 @@ public class App {
                 TaskManagerInterface<Task> display = new DisplayImpl();
                 display.sortThenDisplayTasks(sharedTaskList);
 
-                InputHandler inputHandler = new InputHandler();
-                TypedNameValue<String> userInput = inputHandler.getUserInput(
-                        "Enter T to create new Task, P for Prioritizing, M for Managing Tasks, or E to exit: ");
-                // how to pass the rest of args to pass for TypedNameValue<String, Object> ?
+                // display.displayPriorityMatrix(sharedTaskList);
+                NamedTypedValue<String> userInput = inputHandler.getUserInput(
+                        "Enter T to create new Task, P for Prioritizing, M for Managing Tasks, or E to exit: ", String.class);
+
+                // how to pass the rest of args to NamedTypedValue<String, Object> ?
 
                 switch (userInput.getValue()) {
 
@@ -35,46 +45,30 @@ public class App {
                         break;
 
                     case "P":
-            
-                        TypedNameValue<?> maybeSelectedTask = taskSelectorInstance.selectTask(sharedTaskList);
+                       NamedTypedValue<Task> maybeSelectedTask = taskSelectorInstance.selectTask(sharedTaskList);
 
-                        if (maybeSelectedTask.getValue() instanceof Task) {
-                            Task selectedTask = (Task) maybeSelectedTask.getValue();
-                            PriorityQueueCommand<Task> prioritizeTaskCommand = new PriorityQueueCommand<>();
-                            TypedNameValue<Task> prioritizedTask = prioritizeTaskCommand.execute(sharedTaskList);
-                            
-                            sharedTaskList.add(prioritizedTask); // TODO 
+                        if (maybeSelectedTask.getName().equals("ExitSelection")) {
+                            // Handle the exit case here
+                            System.out.println("Exiting task selection.");
+                        } else if (maybeSelectedTask.getValue() != null) {
+                            Task selectedTask = maybeSelectedTask.getValue();
 
+                            PriorityQueueCommand prioritizeTaskCommand = new PriorityQueueCommand();
+                            prioritizeTaskCommand.execute(selectedTask);
                         } else {
                             System.out.println("No task selected for prioritization.");
                         }
 
                         break;
 
-
                     case "M":
                         // time, date.
-                        System.out.println("You chose Managing a task.");
+                        System.out.println("You chose Managing duration of a task.");
 
-                        TaskSchedulerCommand schedual = new TaskSchedulerCommand();
-                        // give a change to select the desired task
-                        // create an algorithm that does appropriate action to the current case
-
-                        // Optional<Task> currTask = selector.taskSelectorOptional(sharedTaskList);
-
-                        // newTask = schedule.execute(tasks);
-
-                        // if (newTask.getTime() != null && task.getInterval() != null) {
-                        // String taskName = scanner.nextLine();
-
-                        // System.out.print("Enter the description of the task: ");
-                        // String taskDescription = scanner.nextLine();
-
-                        // newTask = new Task(taskName, taskDescription);
-                        // tasks.add(newTask);
-                        // Task newTask = ScheduleTaskCommand();
-                        // break;
-                        // }
+                        TaskSchedulerCommand schedule = new TaskSchedulerCommand();
+                        // Todo 
+                        // fix TaskSelector class bugs 
+                        //explore task and duration problem domain then create an algorithm with pedac; implement efficient solution 
 
                     case "E":
 
