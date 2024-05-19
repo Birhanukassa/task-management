@@ -45,6 +45,7 @@ public class App {
                         break;
 
                     case "P":
+                        System.out.println("You chose Prioritizing a task.");
                        NamedTypedValue<Task> maybeSelectedTask = taskSelectorInstance.selectTask(sharedTaskList);
 
                         if (maybeSelectedTask.getName().equals("ExitSelection")) {
@@ -66,9 +67,7 @@ public class App {
                         System.out.println("You chose Managing duration of a task.");
 
                         TaskSchedulerCommand schedule = new TaskSchedulerCommand();
-                        // Todo 
-                        // fix TaskSelector class bugs 
-                        //explore task and duration problem domain then create an algorithm with pedac; implement efficient solution 
+                        // Todo : fix TaskSelector class bugs, explore task and duration problem domain then create an algorithm with pedac; implement efficient solution 
 
                     case "E":
 

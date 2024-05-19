@@ -11,15 +11,15 @@ public class TaskFactory {
     private String taskDescription;
     private Task newTask;
 
-     public Task createTask() {
+     public Task createTask() throws Exception {
        
         System.out.println("You chose creating a Task.");
         System.out.println("==============================\n");
-        InputHandler<String> taskNameInput = new InputHandler<>();
-        this.taskName = taskNameInput.getUserInput("Enter the name of the task: ", String.class);
+        InputHandler taskNameInput = new InputHandler();
+        this.taskName = taskNameInput.getUserInput("Enter the name of the task: ", String.class).getValue();
 
-         InputHandler<String>  taskDesc = new InputHandler<>();
-         this.taskDescription = taskDesc.getUserInput("Enter the description of the task: ", String.class);
+         InputHandler taskDesc = new InputHandler();
+         this.taskDescription = taskDesc.getUserInput("Enter the description of the task: ", String.class).getValue();
 
          // Create a new Task object with the provided name and description
          this.newTask = new Task(taskName, taskDescription);
@@ -27,7 +27,3 @@ public class TaskFactory {
      }
 }
 
-// make sure the errors are fixed 
-// make sure local variables are used hence probably
-// make sure to fix constructor Task bypassing problem 
-// ? 
