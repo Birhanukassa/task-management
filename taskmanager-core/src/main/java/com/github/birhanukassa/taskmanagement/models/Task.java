@@ -66,7 +66,7 @@ public class Task {
         this.importance = importance;
     }
 
-    public int getImprtance() {
+    public int getImportance() {
         return importance;
     }
 
@@ -84,13 +84,13 @@ public class Task {
 
     @Override
     public String toString() {
-        List<NameValue> vars = FieldValueMapper.getInitializedVars(this);
+        List<NamedTypedValue<?>> vars = FieldValueMapper.getInitializedVars(this);
 
-        String output = "";
+        StringBuilder output = new StringBuilder();
 
-        for (NameValue nv : vars) {
-            output += nv.getName() + ": " + nv.getValue() + "\n";
+        for (NamedTypedValue<?> nv : vars) {
+            output.append(nv.getName()).append(": ").append(nv.getValue()).append("\n");
         }
-        return output;
+        return output.toString();
     }
 }

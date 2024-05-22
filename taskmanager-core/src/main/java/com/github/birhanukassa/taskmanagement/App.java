@@ -21,8 +21,8 @@ public class App {
     }
 
     private static void registerTypeConverters() {
-        inputHandler.registerTypeConverter(Integer.class, Integer::valueOf);
-        inputHandler.registerTypeConverter(Double.class, Double::parseDouble);
+        InputHandler.registerTypeConverter(Integer.class, Integer::valueOf);
+        InputHandler.registerTypeConverter(Double.class, Double::parseDouble);
     }
 
     private static void runTaskManagementProgram(List<Task> sharedTaskList) {
@@ -109,89 +109,3 @@ public class App {
     }
 }
 
-
-/* 
-public class App {
-    public static void main() throws Exception {
-
-        // need to work on these !
-        InputHandler.registerTypeConverter(Integer.class, Integer::valueOf);  
-        InputHandler.registerTypeConverter(Integer.class, s -> Integer.parseInt(s));
-        InputHandler.registerTypeConverter(Double.class, s -> Double.parseDouble(s));
-
-        TaskList taskList = TaskList.INSTANCE;
-        List<Task> sharedTaskList = taskList.getTasks();
-       
-        InputHandler inputHandler = new InputHandler();
-        TaskSelector taskSelectorInstance = new TaskSelector(inputHandler);
-        NamedTypedValue<Task> maybeSelectedTask = taskSelectorInstance.promptUserForTaskSelection(sharedTaskList);
-
-        TaskManagerInterface<Task> display = new DisplayImpl();
-        display.sortThenDisplayTasks(sharedTaskList);
-
-        // display.displayPriorityMatrix(sharedTaskList);
-        NamedTypedValue<String> userInput = inputHandler.getUserInput(
-                "Enter T to create new Task, P for Prioritizing, M for Managing Tasks, or E to exit the program: ", String.class);
-            
-        while (!userInput.getValue().equalsIgnoreCase("E")) {
-
-            if (sharedTaskList.size() > 0) {
-
-                switch (userInput.getValue().toUpperCase()) {
-
-                    case "T":
-                        TaskFactory taskFactory = new TaskFactory();
-                        Task newTask = taskFactory.createTask();
-                        sharedTaskList.add(newTask);
-                        break;
-
-                    case "P":
-                        System.out.println("You chose Prioritizing a task.");
-                        display.sortThenDisplayTasks(sharedTaskList);
-
-                        if (maybeSelectedTask.getName().equals("ExitSelection")) {
-                            System.out.println("Exiting Prioritizing a task.");
-                            continue;
-                        } else if (maybeSelectedTask.getValue() != null) {
-                            Task selectedTask = maybeSelectedTask.getValue();
-                            PriorityQueueCommand prioritizeTaskCommand = new PriorityQueueCommand();
-                            prioritizeTaskCommand.execute(selectedTask);
-                        } else {
-                            System.out.println("No task selected for prioritization.");
-                        }
-
-                        break;
-
-                    case "M":
-                        // time, date.
-                        System.out.println("You chose Managing duration of a task.");
-
-                        display.sortThenDisplayTasks(sharedTaskList);
-
-                        if (maybeSelectedTask.getName().equals("ExitSelection")) {
-                            System.out.println("Exiting Prioritizing a task.");
-                            continue;
-                        } else if (maybeSelectedTask.getValue() != null) {
-                            Task selectedTask = maybeSelectedTask.getValue();
-                            TaskSchedulerCommand taskSchedulerCommand = new TaskSchedulerCommand();
-
-                            taskSchedulerCommand.execute(selectedTask);
-                        } else {
-                            System.out.println("No task selected for prioritization.");
-                        }
-                        break;
-
-                    default:
-                        System.out.println("Invalid choice. Please try again.");
-                        break;
-                }
-
-            } else {
-                System.out.println("No tasks found. Please create a new task.");
-            }
-        }
-    
-        System.out.println("Exiting the program.");
-    } 
-}
- */
