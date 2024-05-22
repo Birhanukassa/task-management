@@ -10,24 +10,26 @@ public class TaskSelector {
         this.inputHandler = inputHandler;
     }
 
-    public NamedTypedValue<Task> selectTask(List<Task> tasks) {
-        System.out.println("Select a task by entering the task number, or enter 'E' to exit:");
+    public NamedTypedValue<Task> promptUserForTaskSelection(List<Task> tasks) {
+        System.out.println("Select a task by entering the task key, or enter 'E' to exit:");
 
-        NamedTypedValue<String> userInput;
+        NamedTypedValue<String> userTaskSelection;
         Task selectedTask = null;
         do {
             try {
-                userInput = inputHandler.getUserInput("Enter task number or 'E' to exit: ", String.class);
-                if (userInput.getValue().equalsIgnoreCase("E")) {
+                userTaskSelection = inputHandler.getUserInput(
+                    "Enter task key or 'E' to exit: ", String.class);
+                if (userTaskSelection.getValue().equalsIgnoreCase("E")) {
                     return new NamedTypedValue<>("Task", "ExitSelection", null);
                 }
 
-                int taskIndex = Integer.parseInt(userInput.getValue()) - 1;
+                int taskIndex = Integer.parseInt(userTaskSelection.getValue()) - 1;
                 if (taskIndex >= 0 && taskIndex < tasks.size()) {
                     selectedTask = tasks.get(taskIndex);
                 } else {
                     System.out.println("Invalid task number. Please try again.");
                 }
+                
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input. Please enter a valid task number or 'E' to exit.");
             } catch (Exception e) {
@@ -39,4 +41,4 @@ public class TaskSelector {
         return new NamedTypedValue<>("Task", "SelectedTask", selectedTask);
     }
 }
-// todo: fix this errors 
+
