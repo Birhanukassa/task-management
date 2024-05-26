@@ -11,10 +11,8 @@ public class DisplayImpl implements TaskManagerInterface<Task> {
     public void sortThenDisplayTasks(List<Task> sharedTaskList) {
         if (sharedTaskList.size() > 0) {
             sharedTaskList.sort(Comparator.comparingDouble(Task::getPriorityScore).reversed());
-            System.out.println("Displaying sorted tasks:");
-            for (Task task : sharedTaskList) {
-                System.out.println("Task: " + task.getTaskName() + ", Priority Score: " + task.getPriorityScore());
-            }
+            System.out.println("\nDisplaying sorted tasks:\n=======================\n");
+            sharedTaskList.forEach(System.out::println);
         } else {
             System.out.println("No tasks to display. Please create a task first.");
         }
@@ -22,10 +20,8 @@ public class DisplayImpl implements TaskManagerInterface<Task> {
 
     @Override
     public void displayPriorityMatrix(List<Task> sharedTaskList) {
-        System.out.println("Displaying priority matrix:");
-        for (Task task : sharedTaskList) {
-            System.out.println("Task: " + task.getTaskName() + ", Priority Score: " + task.getPriorityScore());
-        }
+        System.out.println("\nDisplaying priority matrix:\n============================\n");
+        sharedTaskList.forEach(System.out::println);
     }
 }
 

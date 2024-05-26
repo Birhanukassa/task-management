@@ -4,10 +4,14 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
+import java.util.logging.Logger;
 
+import com.github.birhanukassa.taskmanagement.commands.PriorityQueueCommand;
 import com.github.birhanukassa.taskmanagement.models.NamedTypedValue;
 
 public class InputHandler {
+        private static final Logger LOGGER = Logger.getLogger(PriorityQueueCommand.class.getName());
+        
     private static final Map<Class<?>, Function<String, ?>> TYPE_CONVERTERS = new ConcurrentHashMap<>();
     private static final Scanner SCANNER = new Scanner(System.in);
     private static final String EXIT_INPUT = "E";
@@ -40,47 +44,24 @@ public class InputHandler {
             throw new Exception("Invalid input for type " + targetClass.getName() + ". Please try again.");
         }
     }
+
+    public int getValidatedNumberInput(String prompt, int min, int max) throws Exception {
+        InputHandler inputHandler = new InputHandler();
+        NamedTypedValue<Integer> userInput;
+        int value;
+        do {
+            userInput = inputHandler.getUserInput(prompt, Integer.class);
+            value = userInput.getValue();
+            if (value < min || value > max) {
+                LOGGER.warning(() -> String.format("Invalid input. Please enter a value between %d and %d.", min, max));
+            }
+        } while (value < min || value > max);
+        return value;
+    }
+
 }
 
 
-
-/* 
-public class InputHandler {
-    private Scanner scanner;
-
-    public InputHandler() {
-        scanner = new Scanner(System.in);
-    }
-
-    public NamedTypedValue<String> getUserInput(String inputType, String message) {
-        System.out.println(message);
-        String inputValue = scanner.nextLine();
-
-        if (inputValue.equalsIgnoreCase("E")) {
-            return new NamedTypedValue<String>("string", "input", "E");
-        }
-
-        return createTypedNameValue(inputType, inputValue);
-    }
-
-    private <T> NamedTypedValue<T> createTypedNameValue(String type, String value) {
-        switch (type.toLowerCase()) {
-            case "string":
-                return new NamedTypedValue<>("string", "input", (T) value);
-            case "integer":
-                return new NamedTypedValue<>("Integer", "input", (T) Integer.valueOf(value));
-            case "double":
-                return new NamedTypedValue<>("Double", "input", (T) Double.valueOf(value));
-            case "boolean":
-                return new NamedTypedValue<>("Boolean", "input", (T) Boolean.valueOf(value));
-            default:
-                // Handle invalid type
-                System.out.println("Invalid type. Please enter a valid type (string, integer, double, boolean) or 'E' to exit.");
-                return null;
-        }
-    }
-}
-*/
 
 
 

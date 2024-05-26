@@ -7,11 +7,14 @@ import com.github.birhanukassa.taskmanagement.util.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class App {
     private static final List<Task> taskList = TaskListSingleton.getInstance();
     private static final InputHandler inputHandler = new InputHandler();
     private static final TaskManagerInterface<Task> display = new DisplayImpl();
+
+    private static final Logger LOGGER = Logger.getLogger(App.class.getName());
 
     public static void main(String[] args) {
         registerTypeConverters();
@@ -21,6 +24,7 @@ public class App {
     }
 
     private static void registerTypeConverters() {
+        InputHandler.registerTypeConverter(String.class, s -> s); 
         InputHandler.registerTypeConverter(Integer.class, Integer::valueOf);
         InputHandler.registerTypeConverter(Double.class, Double::parseDouble);
     }
@@ -47,11 +51,13 @@ public class App {
     }
     
     private static void handleUserInput(NamedTypedValue<String> userInput, List<Task> sharedTaskList) {
-        if (sharedTaskList.isEmpty()) {
-            System.out.println("No tasks found. Please create a new task.");
+        if (!"T".equals(userInput.getValue().toUpperCase()) && sharedTaskList.isEmpty()) {
+
+            LOGGER.warning(String.format("No tasks found. Please create a new task.");
+
             return;
         }
-
+        
         switch (userInput.getValue().toUpperCase()) {
             case "T":
                 createNewTask(sharedTaskList);
@@ -63,7 +69,7 @@ public class App {
                 manageTask(sharedTaskList);
                 break;
             default:
-                System.out.println("Invalid choice. Please try again.");
+                LOGGER.warning("Invalid choice. Please try again.");
                 break;
         }
     }
@@ -93,19 +99,49 @@ public class App {
         }
     }
 
+    /**
+    * Manages the task duration.
+    *
+    * @param sharedTaskList the list of tasks to be managed
+    */
     private static void manageTask(List<Task> sharedTaskList) {
         TaskSelector taskSelectorInstance = new TaskSelector(inputHandler);
         NamedTypedValue<Task> maybeSelectedTask = taskSelectorInstance.promptUserForTaskSelection(sharedTaskList);
 
-        if (maybeSelectedTask.getName().equals("ExitSelection")) {
-            System.out.println("Exiting Managing duration of a task.");
-        } else if (maybeSelectedTask.getValue() != null) {
+        if (!maybeSelectedTask.getName().equals("ExitSelection")) {
             Task selectedTask = maybeSelectedTask.getValue();
-            TaskSchedulerCommand taskSchedulerCommand = new TaskSchedulerCommand();
-            taskSchedulerCommand.execute(selectedTask);
-        } else {
-            System.out.println("No task selected for management.");
+            boolean continueManaging = true;
+
+            while (continueManaging) {
+                LOGGER.info("\nManage Task Options:");
+                LOGGER.info("1. Add Schedule");
+                LOGGER.info("2. Add Deadline");
+                LOGGER.info("3. Add Interval");
+                LOGGER.info("4. Return to Main Menu");
+
+                int choice = getValidatedInput("Enter your choice: ", 1, 4);
+
+                switch (choice) {
+                    case 1:
+                        addSchedule(selectedTask);
+                        break;
+                    case 2:
+                        addDeadline(selectedTask);
+                        break;
+                    case 3:
+                        addInterval(selectedTask);
+                        break;
+                    case 4:
+                        continueManaging = false;
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
+                }
+            }
         }
     }
 }
+    
+    
+
 
