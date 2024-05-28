@@ -136,7 +136,7 @@ public class App {
                         } else {
                             TimePeriod.Interval interval = taskSchedulerCommand.parseInterval(intervalInput);
 
-                            taskSchedulerCommand.setTimePeriod(selectedTask, startingDate, startingTime, null, inte l rval);
+                            taskSchedulerCommand.setTimePeriod(selectedTask, startingDate, startingTime, null, interval);
                         }
                     } else {
                         if (intervalInput.equalsIgnoreCase("x")) {
