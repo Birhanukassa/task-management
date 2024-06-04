@@ -1,81 +1,97 @@
 package com.github.birhanukassa.taskmanagement;
 
-import com.github.birhanukassa.taskmanagement.display.*;
 import com.github.birhanukassa.taskmanagement.commands.*;
+import com.github.birhanukassa.taskmanagement.display.*;
 import com.github.birhanukassa.taskmanagement.models.*;
 import com.github.birhanukassa.taskmanagement.util.*;
+import com.github.birhanukassa.taskmanagement.util.TaskPromptUtility.IntervalOption;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.Scanner;
 
 public class App {
-    private static final List<Task> taskList = TaskListSingleton.getInstance();
+    private static final List<Task> sharedTaskList = TaskListSingleton.getInstance();
     private static final InputHandler inputHandler = new InputHandler();
     private static final TaskManagerInterface<Task> display = new DisplayImpl();
+    TaskSchedulerCommand taskSchedulerCommand = new TaskSchedulerCommand();
 
     static Scanner scanner = new Scanner(System.in);
     private static final Logger LOGGER = Logger.getLogger(App.class.getName());
 
     public static void main(String[] args) {
         registerTypeConverters();
-        ArrayList<Task> sharedTaskList = new ArrayList<>(taskList);
-        
-        runTaskManagementProgram(sharedTaskList);
+        runTaskManagementProgram();
     }
 
     private static void registerTypeConverters() {
-        InputHandler.registerTypeConverter(String.class, s -> s); 
+        InputHandler.registerTypeConverter(String.class, String::toString);
         InputHandler.registerTypeConverter(Integer.class, Integer::valueOf);
         InputHandler.registerTypeConverter(Double.class, Double::parseDouble);
     }
 
-    private static void runTaskManagementProgram(List<Task> sharedTaskList) {
-        NamedTypedValue<String> userInput;
-        do {
+    private static void runTaskManagementProgram() {
+        TaskManagerInterface<Task> display = new DisplayImpl();
+        boolean shouldExit = false;
+
+        while (!shouldExit) {
             display.sortThenDisplayTasks(sharedTaskList);
-            userInput = getUserInput();
-            handleUserInput(userInput, sharedTaskList);
-        } while (!userInput.getValue().equalsIgnoreCase("E"));
-        System.out.println("Exiting the program.");
+
+            String prompt = "Enter T to create new Task, P for Prioritizing, M for Managing Tasks, or E to exit the program: ";
+            NamedTypedValue<String> userInput = null;
+            try {
+                userInput = inputHandler.getUserInput(prompt, String.class);
+            } catch (Exception e) {
+                // Handle the exception
+                e.printStackTrace(); // For example, print the stack trace
+            }
+
+            if (userInput != null) {
+                String inputValue = userInput.getValue().toUpperCase();
+                switch (inputValue) {
+                case "T":
+                    createNewTask(sharedTaskList);
+                    break;
+                case "P":
+                    prioritizeTask(sharedTaskList, inputHandler);
+                    break;
+                case "M":
+                    manageTaskDuration1(sharedTaskList, inputHandler, scanner);
+                    break;
+                case "E":
+                    shouldExit = true;
+                    break;
+                default:
+                    LOGGER.warning("Invalid choice. Please try again.");
+                    break;
+                }
+            }
+        }
+        LOGGER.info("Exiting the program.");
+    }
+    /* 
+    private static NamedTypedValue<String> getUserInput(Scanner scanner, InputHandler inputHandler) {
+        String prompt = "Enter T to create new Task, P for Prioritizing, M for Managing Tasks, or E to exit the program: ";
+        NamedTypedValue<String> userInput = null;
+
+        while (userInput == null) {
+            try {
+                String inputValue = userInput.getValue().toUpperCase();
+                if (!inputValue.matches("^[TPME]$")) {
+                    LOGGER.warning("Invalid input. Please try again.");
+                    userInput = null;
+                }
+            } catch (Exception e) {
+                LOGGER.warning("An error occurred while getting user input: " + e.getMessage());
+            }
+        }
+
+        return userInput;
     }
 
-    private static NamedTypedValue<String> getUserInput() {
-        try {
-            return inputHandler.getUserInput(
-                "Enter T to create new Task, P for Prioritizing, M for Managing Tasks, or E to exit the program: ", String.class);
-        } catch (Exception e) {
-            System.out.println("An error occurred while getting user input: " + e.getMessage());
-            // Handle the exception or return a default value
-            return new NamedTypedValue<>("string", "Error", "E"); // Returning "E" to exit, as an example
-        }
-    }
-    
-    private static void handleUserInput(NamedTypedValue<String> userInput, List<Task> sharedTaskList) {
-        if (!"T".equals(userInput.getValue().toUpperCase()) && sharedTaskList.isEmpty()) {
-
-            LOGGER.warning(String.format("No tasks found. Please create a new task."));
-
-            return;
-        }
-        
-        switch (userInput.getValue().toUpperCase()) {
-            case "T":
-                createNewTask(sharedTaskList);
-                break;
-            case "P":
-                prioritizeTask(sharedTaskList);
-                break;
-            case "M":
-                manageTask(sharedTaskList);
-                break;
-            default:
-                LOGGER.warning("Invalid choice. Please try again.");
-                break;
-        }
-    }
-
+    */
     private static void createNewTask(List<Task> sharedTaskList) {
         TaskFactory taskFactory = new TaskFactory();
         try {
@@ -85,8 +101,7 @@ public class App {
             LOGGER.warning("An error occurred while creating a new task: " + e.getMessage());
         }
     }
-        
-    private static void prioritizeTask(List<Task> sharedTaskList) {
+    private static void prioritizeTask(List<Task> sharedTaskList, InputHandler inputHandler) {
         TaskSelector taskSelectorInstance = new TaskSelector(inputHandler);
         NamedTypedValue<Task> maybeSelectedTask = taskSelectorInstance.promptUserForTaskSelection(sharedTaskList);
 
@@ -100,72 +115,43 @@ public class App {
             System.out.println("No task selected for prioritization.");
         }
     }
-
-    /**
-    * Manages the task duration.
-    *
-    * @param sharedTaskList the list of tasks to be managed
-    */
-    private static void manageTask(List<Task> sharedTaskList) {
+    private static void manageTaskDuration1(List<Task> sharedTaskList, InputHandler inputHandler, Scanner scanner) {
         TaskSelector taskSelectorInstance = new TaskSelector(inputHandler);
         NamedTypedValue<Task> maybeSelectedTask = taskSelectorInstance.promptUserForTaskSelection(sharedTaskList);
-        TaskSchedulerCommand taskSchedulerCommand = new TaskSchedulerCommand();
 
-        if (!maybeSelectedTask.getName().equals("ExitSelection")) {
+        if (maybeSelectedTask.getValue() instanceof Task) {
             Task selectedTask = maybeSelectedTask.getValue();
-            boolean continueEditing = true;
-
-            while (continueEditing) {
-                System.out.println("Chose a day you want to set a time with (format: m/d/yyyy) :");
-                String startingDate = scanner.nextLine();
-
-                System.out.println("What is the start time for the task? (format: h:m) :");
-                String startingTime = scanner.nextLine();
-
-                System.out.println("What time do you want to set for the current task? (format: h:m)  if no need ending time enter (x): ");
-                String endingTime = scanner.nextLine();
-
-                System.out.println("Do you want to set an interval for the task? Enter (I) or if no enter (x): ");
-                String intervalInput = scanner.nextLine();
-
-                // only string date is valid
-                if (DateTimeValidator.isValidDate(startingDate) && DateTimeValidator.isValidTime(startingTime)) {
-                    if (endingTime.equalsIgnoreCase("x") || !DateTimeValidator.isValidTime(endingTime)) {
-                        if (intervalInput.equalsIgnoreCase("x")) {
-                            taskSchedulerCommand.setTimePeriod(selectedTask, startingDate, startingTime, null, null);
-                        } else {
-                            TimePeriod.Interval interval = taskSchedulerCommand.parseInterval(intervalInput);
-
-                            taskSchedulerCommand.setTimePeriod(selectedTask, startingDate, startingTime, null, interval);
-                        }
-                    } else {
-                        if (intervalInput.equalsIgnoreCase("x")) {
-                            taskSchedulerCommand.setTimePeriod(selectedTask, startingDate, startingTime, endingTime, null);
-                        } else {
-                            TimePeriod.Interval interval = taskSchedulerCommand.parseInterval(intervalInput);
-
-                            taskSchedulerCommand.setTimePeriod(selectedTask, startingDate, startingTime, endingTime, interval);
-                        }
-                    }
-                } else {
-                    LOGGER.info("Invalid starting date or time. Please try again.");
-                }
-
-
-
-                LOGGER.info("Task details: " + selectedTask);
-                System.out.println("Do you want to continue editing? (y/n)");
-                String choice = scanner.nextLine();
-                continueEditing = choice.equalsIgnoreCase("y");
-            }
+            manageTaskDuration2(selectedTask, scanner);
+        } else if (maybeSelectedTask.getName().equals("ExitSelection")) {
+            LOGGER.info("Exiting Prioritizing a task.");
         } else {
             LOGGER.info("No task selected for managing.");
         }
     }
+
+
+    private static void manageTaskDuration2(Task selectedTask, Scanner scanner) {
+        boolean shouldContinueEditing = true;
+
+        while (shouldContinueEditing) {
+
+            LocalDate startingDate = TaskPromptUtility.promptForDate(scanner, "Enter the starting date for the task (format: YYYY-MM-DD):");
+
+            LocalTime startingTime = TaskPromptUtility.promptForTime(scanner, "Enter the starting time for the task (format: HH:mm):");
+            LocalTime endingTime = TaskPromptUtility.promptForTime(scanner, "Enter the end time for the task (format: HH:mm) or 'x' if there is no end time:");
+            LocalDate interval = TaskPromptUtility.promptForInterval(scanner, "Do you want to set an interval for the task? (YES/NO):");
+
+
+            TaskSchedulerCommand.setTimePeriod(selectedTask, startingDate, startingTime, endingTime, interval);
+
+            LOGGER.info("Task details: %s", selectedTask);
+
+            System.out.println("Enter 'q' to quit or any other key to continue editing:");
+            String input = scanner.nextLine();
+            shouldContinueEditing = !input.equalsIgnoreCase("q");
+        }
+    }
 }
 
-
-    
-    
 
 

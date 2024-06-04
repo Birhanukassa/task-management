@@ -17,8 +17,8 @@ public class PriorityQueueCommand implements TaskCommand<Task> {
         Integer importance;
 
         try {
-            importance = inputHandler.getValidatedNumberInput("Rate how important the task is (1-10): ", 1, 10);
-            urgency = inputHandler.getValidatedNumberInput("Rate how urgent the task is (1-10): ", 1, 10);
+            importance = inputHandler.getValidatedNumberInput("Rate how important the task is (1-10): ");
+            urgency = inputHandler.getValidatedNumberInput("Rate how urgent the task is (1-10): ");
             priorityLevel = calculatePriorityLevel(importance, urgency);
             task.setPriorityScore(priorityLevel);
             LOGGER.info(() -> String.format("The calculated priority score is: %.2f", priorityLevel));
@@ -35,6 +35,3 @@ public class PriorityQueueCommand implements TaskCommand<Task> {
         InputHandler.registerTypeConverter(Integer.class, Integer::valueOf);
     }
 }
-
-
-

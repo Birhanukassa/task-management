@@ -6,12 +6,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.logging.Logger;
 
-import com.github.birhanukassa.taskmanagement.commands.PriorityQueueCommand;
 import com.github.birhanukassa.taskmanagement.models.NamedTypedValue;
 
 public class InputHandler {
-    private static final Logger LOGGER = Logger.getLogger(PriorityQueueCommand.class.getName());
-        
+    private static final Logger LOGGER = Logger.getLogger(InputHandler.class.getName());
+
     private static final Map<Class<?>, Function<String, ?>> TYPE_CONVERTERS = new ConcurrentHashMap<>();
     private static final Scanner SCANNER = new Scanner(System.in);
     private static final String EXIT_INPUT = "E";
@@ -34,7 +33,8 @@ public class InputHandler {
 
         Function<String, ?> converter = TYPE_CONVERTERS.get(targetClass);
         if (converter == null) {
-            throw new Exception("No converter registered for type " + targetClass.getName() + ". Please register a converter first.");
+            throw new Exception("No converter registered for type " + targetClass.getName()
+                    + ". Please register a converter first.");
         }
 
         try {
@@ -45,23 +45,23 @@ public class InputHandler {
         }
     }
 
-    public int getValidatedNumberInput(String prompt, int num) throws Exception {
+        public int getValidatedNumberInput(String prompt) throws Exception {
         InputHandler inputHandler = new InputHandler();
         NamedTypedValue<Integer> userInput;
         int value;
+        boolean isValid = false;
+
         do {
             userInput = inputHandler.getUserInput(prompt, Integer.class);
             value = userInput.getValue();
-            if (value > 0) {
-                LOGGER.warning(() -> String.format("Invalid input. Please enter a value between %d and %d.", value));
+            if (value <= 0) {
+                LOGGER.warning(() -> String.format("Invalid input. Please enter a value greater than 0."));
+            } else {
+                isValid = true;
             }
-        } while (value > 0);
+        } while (!isValid);
+
         return value;
     }
 
 }
-
-
-
-
-
