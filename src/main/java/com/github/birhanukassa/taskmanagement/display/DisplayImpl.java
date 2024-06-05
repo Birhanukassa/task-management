@@ -1,20 +1,19 @@
 package com.github.birhanukassa.taskmanagement.display;
-
 import com.github.birhanukassa.taskmanagement.models.Task;
 import java.util.Comparator;
 import java.util.List;
-
+import java.util.logging.Logger;
 public class DisplayImpl implements TaskManagerInterface<Task> {
+    private static final Logger logger = Logger.getLogger(DisplayImpl.class.getName());
 
- 
     @Override
     public void sortThenDisplayTasks(List<Task> sharedTaskList) {
-        if (sharedTaskList.size() > 0) {
+        if (!sharedTaskList.isEmpty()) {
             sharedTaskList.sort(Comparator.comparingDouble(Task::getPriorityScore).reversed());
-            System.out.println("\nDisplaying sorted tasks:\n=======================\n");
+            logger.info("\nDisplaying sorted tasks:\n=======================\n");
             sharedTaskList.forEach(System.out::println);
         } else {
-            System.out.println("No tasks to display. Please create a task first.");
+            logger.info("No tasks to display. Please create a task first.");
         }
     }
 
@@ -25,50 +24,46 @@ public class DisplayImpl implements TaskManagerInterface<Task> {
     }
 }
 
- 
-  
+/* 
+    @Override
+    public Optional<Task> selectTask(List<Task> tasks) {
+        Optional<Task> selectedTask = Optional.empty();
+        String inputKey;
 
+        displaySortedTasks(tasks);
 
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter the key of the task you want to manage, or 'E' to exit: ");
+        inputKey = scanner.nextLine();
 
-   
-    // @Override
-    // public Optional<Task> selectTask(List<Task> tasks) {
-    //     Optional<Task> selectedTask = Optional.empty();
-    //     String inputKey;
+        do {
+            if ("E".equalsIgnoreCase(inputKey)) {
+                System.out.println("Exiting task Manager.");
+                break;
+            }
 
-    //     displaySortedTasks(tasks);
+            int selectedTaskIndex;
 
-    //     Scanner scanner = new Scanner(System.in);
-    //     System.out.print("Enter the key of the task you want to manage, or 'E' to exit: ");
-    //     inputKey = scanner.nextLine();
-
-    //     do {
-    //         if ("E".equalsIgnoreCase(inputKey)) {
-    //             System.out.println("Exiting task Manager.");
-    //             break;
-    //         }
-
-    //         int selectedTaskIndex;
-
-    //         try {
-    //             selectedTaskIndex = Integer.parseInt(inputKey, 10);
+            try {
+                selectedTaskIndex = Integer.parseInt(inputKey, 10);
         
-    //         } catch (NumberFormatException e) {
-    //             System.out.println("Invalid key. Please enter a number.");
-    //             continue;
-    //         }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid key. Please enter a number.");
+                continue;
+            }
 
-    //         if (selectedTaskIndex < 0 || selectedTaskIndex >= tasks.size()) {
-    //             System.out.println("Invalid key. Please try again.");
-    //             continue;
-    //         }
+            if (selectedTaskIndex < 0 || selectedTaskIndex >= tasks.size()) {
+                System.out.println("Invalid key. Please try again.");
+                continue;
+            }
 
-    //         selectedTask = Optional.of(tasks.get(selectedTaskIndex));
-    //         System.out.println("Selected Task: " + selectedTask.get().getTaskName());
+            selectedTask = Optional.of(tasks.get(selectedTaskIndex));
+            System.out.println("Selected Task: " + selectedTask.get().getTaskName());
 
-    //     } while (true);
+        } while (true);
 
-    //     scanner.close();
-    //     return selectedTask;
-    //
+        scanner.close();
+        return selectedTask;
+    
 
+*/

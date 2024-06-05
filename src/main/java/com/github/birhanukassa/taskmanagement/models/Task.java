@@ -11,13 +11,14 @@ public class Task {
     private String name;
     private String description;
 
-    private int IMPORTANCE;
-    private int URGENCY;
+    private int importance;
+    private int urgency ;
     private double priorityLevel = 0;
 
     private TaskStatus status;
 
     private TaskLocation location;
+    private TimePeriod taskTime;
     private TimePeriod timePeriod;
 
     private boolean isCompleted;
@@ -80,19 +81,19 @@ public class Task {
     }
 
     public void setImportance(int importance) {
-        this.IMPORTANCE = importance;
+        this.importance = importance;
     }
 
     public int getImportance() {
-        return IMPORTANCE;
+        return importance;
     }
 
-    public void setUrgency(int urgency) {
-        this.URGENCY = urgency;
+    public void setUrgency(int urgency ) {
+        this.urgency  = urgency ;
     }
 
     public int getUrgency() {
-        return URGENCY;
+        return urgency ;
     }
 
     public void setTaskTime(TimePeriod taskTime) {
