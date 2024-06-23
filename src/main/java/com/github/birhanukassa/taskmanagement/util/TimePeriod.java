@@ -3,178 +3,111 @@ package com.github.birhanukassa.taskmanagement.util;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-/**
- * Represents a time period with start and end dates/times, and an optional interval.
- */
 public class TimePeriod {
+
     private LocalDate startDate;
     private LocalDate endDate;
     private LocalTime startTime;
     private LocalTime endTime;
     private int interval;
 
-    /**
-     * Constructs a TimePeriod object with start date, end date, start time, end time, and interval.
-     *
-     * @param startDate    the start date of the time period
-     * @param endDate      the end date of the time period
-     * @param startTime    the start time of the time period
-     * @param endTime      the end time of the time period
-     * @param invalid     the interval between start and end times
-     */
-    public TimePeriod(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, int interval) {
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.interval = interval;
+    private TimePeriod(Builder builder) {
+        this.startDate = builder.startDate;
+        this.endDate = builder.endDate;
+        this.startTime = builder.startTime;
+        this.endTime = builder.endTime;
+        this.interval = builder.interval;
     }
 
-    /**
-     * Constructs a TimePeriod object with start date, end date, start time, end time, and interval.
-     *
-     * @param startDate    the start date of the time period
-     * @param endDate      the end date of the time period
-     * @param startTime    the start time of the time period
-     * @param endTime      the end time of the time period
-     */
-    public TimePeriod(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.startTime = startTime;
-        this.endTime = endTime;
+    public static class Builder {
+        private LocalDate startDate;
+        private LocalDate endDate;
+        private LocalTime startTime;
+        private LocalTime endTime;
+        private int interval;
+
+        public Builder withStartDate(LocalDate startDate) {
+            this.startDate = startDate;
+            return this;
+        }
+
+        public Builder withEndDate(LocalDate endDate) {
+            this.endDate = endDate;
+            return this;
+        }
+
+        public Builder withStartTime(LocalTime startTime) {
+            this.startTime = startTime;
+            return this;
+        }
+
+        public Builder withEndTime(LocalTime endTime) {
+            this.endTime = endTime;
+            return this;
+        }
+
+        public Builder withInterval(int interval) {
+            this.interval = interval;
+            return this;
+        }
+
+        public TimePeriod build() {
+            return new TimePeriod(this);
+        }
     }
 
-    /**
-     * Constructs a TimePeriod object with start date, end date, start time, end time, and interval.
-     *
-     * @param startDate    the start date of the time period
-     * @param endDate      the end date of the time period
-     * @param startTime    the start time of the time period
-     * @param invalid     the interval between start and end times
-     */
-    public TimePeriod(LocalDate startDate, LocalDate endDate, LocalTime startTime, int interval) {
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.startTime = startTime;
-        this.interval = interval;
+    // Getters and setters
+    public LocalDate getStartDate() {
+        return startDate;
     }
 
-    /**
-     * Constructs a TimePeriod object with start date, end date, start time, end time, and interval.
-     *
-     * @param startDate    the start date of the time period
-     * @param endDate      the end date of the time period
-     * @param startTime    the start time of the time period
-     */
-    public TimePeriod(LocalDate startDate, LocalDate endDate, LocalTime startTime) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
-        this.endDate = endDate;
-        this.startTime = startTime;
     }
 
-    /**
-     * Constructs a TimePeriod object with start date, end date, start time, end time, and interval.
-     *
-     * @param startDate    the start date of the time period
-     * @param endDate      the end date of the time period
-     * @param invalid     the interval between start and end times
-     */
-    public TimePeriod(LocalDate startDate, LocalDate endDate, int interval) {
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.interval = interval;
+    public LocalDate getEndDate() {
+        return endDate;
     }
 
-    /**
-     * Constructs a TimePeriod object with start date, end date, start time, end time, and interval.
-     *
-     * @param startDate    the start date of the time period
-     * @param endDate      the end date of the time period
-     */
-    public TimePeriod(LocalDate startDate, LocalDate endDate) {
-        this.startDate = startDate;
+    public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
 
-    /**
-     * Constructs a TimePeriod object with start date, end date, start time, end time, and interval.
-     *
-     * @param startDate    the start date of the time period
-     * @param startTime    the start time of the time period
-     * @param endTime      the end time of the time period
-     * @param invalid     the interval between start and end times
-     */
-    public TimePeriod(LocalDate startDate, LocalTime startTime, LocalTime endTime, int interval) {
-        this.startDate = startDate;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.interval = interval;
+    public LocalTime getStartTime() {
+        return startTime;
     }
 
-    /**
-     * Constructs a TimePeriod object with start date, end date, start time, end time, and interval.
-     *
-     * @param startDate    the start date of the time period
-     * @param startTime    the start time of the time period
-     * @param endTime      the end time of the time period
-     */
-    public TimePeriod(LocalDate startDate, LocalTime startTime, LocalTime endTime) {
-        this.startDate = startDate;
+    public void setStartTime(LocalTime startTime) {
         this.startTime = startTime;
+    }
+
+    public LocalTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalTime endTime) {
         this.endTime = endTime;
     }
 
-    /**
-     * Constructs a TimePeriod object with start date, end date, start time, end time, and interval.
-     *
-     * @param startDate    the start date of the time period
-     * @param endDate      the end date of the time period
-     * @param startTime    the start time of the time period
-     * @param endTime      the end time of the time period
-     * @param invalid     the interval between start and end times
-     */
-    public TimePeriod(LocalDate startDate, LocalTime startTime, int interval) {
-        this.startDate = startDate;
-        this.startTime = startTime;
+    public int getInterval() {
+        return interval;
+    }
+
+    public void setInterval(int interval) {
         this.interval = interval;
     }
 
-    /**
-     * Constructs a TimePeriod object with start date, end date, start time, end time, and interval.
-     *
-     * @param startDate    the start date of the time period
-     * @param endDate      the end date of the time period
-     * @param startTime    the start time of the time period
-     * @param endTime      the end time of the time period
-     * @param invalid     the interval between start and end times
-     */
-    public TimePeriod(LocalDate startDate, LocalTime startTime) {
-        this.startDate = startDate;
-        this.startTime = startTime;
-    }
-
-    /**
-     * Constructs a TimePeriod object with start date, end date, start time, end time, and interval.
-     *
-     * @param startDate    the start date of the time period
-     * @param invalid     the interval between start and end times
-     */
-    public TimePeriod(LocalDate startDate, int interval) {
-        this.startDate = startDate;
-        this.interval = interval;
-    }
-
-    /**
-     * Constructs a TimePeriod object with start date, end date, start time, end time, and interval.
-     *
-     * @param startDate    the start date of the time period
-     */
-    public TimePeriod(LocalDate startDate) {
-        this.startDate = startDate;
+    @Override
+    public String toString() {
+        return "TimePeriod{" +
+                "startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", interval=" + interval +
+                '}';
     }
 }
-
 
 
 /*
@@ -192,6 +125,5 @@ public class TimePeriod {
 
     [ 'startingDate',  null,        null,          null,           'interval' ],
     [ 'startingDate',  null,        null,          null,            null ],
-  
 ]
 */
