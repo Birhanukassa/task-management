@@ -1,9 +1,7 @@
 package com.github.birhanukassa.taskmanagement.util;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 
 /**
  * Represents a time period with start and end dates/times, and an optional interval.
@@ -13,7 +11,7 @@ public class TimePeriod {
     private LocalDate endDate;
     private LocalTime startTime;
     private LocalTime endTime;
-    private Interval interval;
+    private int interval;
 
     /**
      * Constructs a TimePeriod object with start date, end date, start time, end time, and interval.
@@ -22,9 +20,9 @@ public class TimePeriod {
      * @param endDate      the end date of the time period
      * @param startTime    the start time of the time period
      * @param endTime      the end time of the time period
-     * @param interval     the interval between start and end times
+     * @param invalid     the interval between start and end times
      */
-    public TimePeriod(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, Interval interval) {
+    public TimePeriod(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, int interval) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.startTime = startTime;
@@ -33,89 +31,167 @@ public class TimePeriod {
     }
 
     /**
-     * Constructs a TimePeriod object with start date and start time.
+     * Constructs a TimePeriod object with start date, end date, start time, end time, and interval.
      *
-     * @param startDate the start date of the time period
-     * @param startTime the start time of the time period
+     * @param startDate    the start date of the time period
+     * @param endDate      the end date of the time period
+     * @param startTime    the start time of the time period
+     * @param endTime      the end time of the time period
      */
-    public TimePeriod(LocalDate startDate, LocalTime startTime) {
-        this(startDate, null, startTime, null, null);
+    public TimePeriod(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
     /**
-     * Constructs a TimePeriod object with start time and end time.
+     * Constructs a TimePeriod object with start date, end date, start time, end time, and interval.
      *
-     * @param startTime the start time of the time period
-     * @param endTime   the end time of the time period
+     * @param startDate    the start date of the time period
+     * @param endDate      the end date of the time period
+     * @param startTime    the start time of the time period
+     * @param invalid     the interval between start and end times
      */
-    public TimePeriod(LocalTime startTime, LocalTime endTime) {
-        this(null, null, startTime, endTime, null);
-    }
-
-    /**
-     * Constructs a TimePeriod object with start time, end time, and interval.
-     *
-     * @param startTime the start time of the time period
-     * @param endTime   the end time of the time period
-     * @param interval  the interval between start and end times
-     */
-    public TimePeriod(LocalTime startTime, LocalTime endTime, Interval interval) {
-        this(null, null, startTime, endTime, interval);
-    }
-
-    /**
-     * Constructs a TimePeriod object with start date and interval.
-     *
-     * @param startDate the start date of the time period
-     * @param interval  the interval between start and end times
-     */
-    public TimePeriod(LocalDate startDate, Interval interval) {
-        this(startDate, null, null, null, interval);
-    }
-
-   
-    public Interval getInterval() {
-        return interval;
-    }
-
-    public void setInterval(Interval interval) {
+    public TimePeriod(LocalDate startDate, LocalDate endDate, LocalTime startTime, int interval) {
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.startTime = startTime;
         this.interval = interval;
     }
 
     /**
-     * Represents an interval duration.
+     * Constructs a TimePeriod object with start date, end date, start time, end time, and interval.
+     *
+     * @param startDate    the start date of the time period
+     * @param endDate      the end date of the time period
+     * @param startTime    the start time of the time period
      */
-    public static class Interval {
-        private long value;
-        private ChronoUnit unit;
+    public TimePeriod(LocalDate startDate, LocalDate endDate, LocalTime startTime) {
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.startTime = startTime;
+    }
 
-        /**
-         * Constructs an Interval object with a value and a time unit.
-         *
-         * @param value the value of the interval
-         * @param unit  the time unit of the interval (e.g., DAYS, WEEKS, MONTHS, YEARS)
-         */
-        public Interval(long value, ChronoUnit unit) {
-            this.value = value;
-            this.unit = unit;
-        }
+    /**
+     * Constructs a TimePeriod object with start date, end date, start time, end time, and interval.
+     *
+     * @param startDate    the start date of the time period
+     * @param endDate      the end date of the time period
+     * @param invalid     the interval between start and end times
+     */
+    public TimePeriod(LocalDate startDate, LocalDate endDate, int interval) {
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.interval = interval;
+    }
 
-        public long getValue() {
-            return value;
-        }
+    /**
+     * Constructs a TimePeriod object with start date, end date, start time, end time, and interval.
+     *
+     * @param startDate    the start date of the time period
+     * @param endDate      the end date of the time period
+     */
+    public TimePeriod(LocalDate startDate, LocalDate endDate) {
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
 
-        public ChronoUnit getUnit() {
-            return unit;
-        }
+    /**
+     * Constructs a TimePeriod object with start date, end date, start time, end time, and interval.
+     *
+     * @param startDate    the start date of the time period
+     * @param startTime    the start time of the time period
+     * @param endTime      the end time of the time period
+     * @param invalid     the interval between start and end times
+     */
+    public TimePeriod(LocalDate startDate, LocalTime startTime, LocalTime endTime, int interval) {
+        this.startDate = startDate;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.interval = interval;
+    }
 
-        /**
-         * Returns the interval duration as a Duration object.
-         *
-         * @return the interval duration
-         */
-        public Duration toDuration() {
-            return Duration.of(value, unit);
-        }
+    /**
+     * Constructs a TimePeriod object with start date, end date, start time, end time, and interval.
+     *
+     * @param startDate    the start date of the time period
+     * @param startTime    the start time of the time period
+     * @param endTime      the end time of the time period
+     */
+    public TimePeriod(LocalDate startDate, LocalTime startTime, LocalTime endTime) {
+        this.startDate = startDate;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
+
+    /**
+     * Constructs a TimePeriod object with start date, end date, start time, end time, and interval.
+     *
+     * @param startDate    the start date of the time period
+     * @param endDate      the end date of the time period
+     * @param startTime    the start time of the time period
+     * @param endTime      the end time of the time period
+     * @param invalid     the interval between start and end times
+     */
+    public TimePeriod(LocalDate startDate, LocalTime startTime, int interval) {
+        this.startDate = startDate;
+        this.startTime = startTime;
+        this.interval = interval;
+    }
+
+    /**
+     * Constructs a TimePeriod object with start date, end date, start time, end time, and interval.
+     *
+     * @param startDate    the start date of the time period
+     * @param endDate      the end date of the time period
+     * @param startTime    the start time of the time period
+     * @param endTime      the end time of the time period
+     * @param invalid     the interval between start and end times
+     */
+    public TimePeriod(LocalDate startDate, LocalTime startTime) {
+        this.startDate = startDate;
+        this.startTime = startTime;
+    }
+
+    /**
+     * Constructs a TimePeriod object with start date, end date, start time, end time, and interval.
+     *
+     * @param startDate    the start date of the time period
+     * @param invalid     the interval between start and end times
+     */
+    public TimePeriod(LocalDate startDate, int interval) {
+        this.startDate = startDate;
+        this.interval = interval;
+    }
+
+    /**
+     * Constructs a TimePeriod object with start date, end date, start time, end time, and interval.
+     *
+     * @param startDate    the start date of the time period
+     */
+    public TimePeriod(LocalDate startDate) {
+        this.startDate = startDate;
     }
 }
 
+
+
+/*
+[
+    [ 'startingDate', 'endingDate', 'startingTime',  'endingTime',    interval ],   
+    [ 'startingDate', 'endingDate', 'startingTime',  'endingTime',    null ],
+    [ 'startingDate', 'endingDate', 'startingTime',  null,           'interval' ],
+    [ 'startingDate', 'endingDate', 'startingTime',  null,           null ],
+    [ 'startingDate', 'endingDate', null,            null,          'interval' ],
+    [ 'startingDate', 'endingDate', null,            null,           null ],
+    [ 'startingDate',  null,       'startingTime',  'endingTime', '  interval' ],
+    [ 'startingDate',  null,       'startingTime',  'endingTime',    null ],
+    [ 'startingDate',  null,       'startingTime',  null,          'interval' ],
+    [ 'startingDate',  null,       'startingTime',  null,           null ],
+
+    [ 'startingDate',  null,        null,          null,           'interval' ],
+    [ 'startingDate',  null,        null,          null,            null ],
+  
+]
+*/

@@ -43,6 +43,11 @@ public class DateTimeValidator {
         return true; // or false, depending on your validation logic
     }
 
+    public static boolean isValidInterval(int interval) {
+        // You can add your validation logic here
+        // For example, you can check if the interval is within a specific range
+        return true; // or false, depending on your validation logic
+    }
 }
 
 

@@ -3,77 +3,47 @@ package com.github.birhanukassa.taskmanagement.util;
 import com.github.birhanukassa.taskmanagement.models.NamedTypedValue;
 import java.util.List;
 import java.util.ArrayList;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class FieldValueMapper {
-
     // Private constructor to prevent instantiation
     private FieldValueMapper() {
-        throw new UnsupportedOperationException(
-                "This is a utility class and cannot be instantiated");
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
+    public static <T> List<NamedTypedValue<Object>> getInitializedVars(T instance) {
+    List<NamedTypedValue<Object>> vars = new ArrayList<>();
+    Method[] methods = instance.getClass().getMethods();
 
-    public static <T> List<NamedTypedValue<?>> getInitializedVars(T instance) {
-        List<NamedTypedValue<?>> vars = new ArrayList<>();
-        Field[] fields = instance.getClass().getDeclaredFields();
-
-        for (Field field : fields) {
-            int modifiers = field.getModifiers();
-            if (Modifier.isStatic(modifiers) || Modifier.isTransient(modifiers)) {
-                continue; // Skip static and transient fields
-            }
-
-            field.setAccessible(true);
-
+    for (Method method : methods) {
+        String methodName = method.getName();
+        if (isGetter(methodName)) {
+            String fieldName = getFieldNameFromGetter(methodName);
             try {
-                Object value = field.get(instance);
-                if (value == null) {
-                    continue; // Skip null values
+                Object value = method.invoke(instance);
+                if (value != null) {
+                    vars.add(new NamedTypedValue<>(value.getClass().getSimpleName(), fieldName, value));
                 }
-
-                Class<?> fieldType = field.getType();
-                String nameOfType = fieldType.getSimpleName();
-                String name = field.getName();
-
-                vars.add(new NamedTypedValue<>(nameOfType, name, value));
-            } catch (IllegalAccessException e) {
+            } catch (IllegalAccessException | InvocationTargetException e) {
                 // Handle the exception or log it appropriately
                 e.printStackTrace();
             }
         }
-
-        return vars;
     }
-}
+    return vars;
+    }
 
+    private static boolean isGetter(String methodName) {
+        return (methodName.startsWith("get") && methodName.length() > 3) ||
+            (methodName.startsWith("is") && methodName.length() > 2);
+    }
 
-
-/*public static <T> List<NamedTypedValue<?>> getInitializedVars(T instance) {
-    return Arrays.stream(instance.getClass().getDeclaredFields())
-            .filter(field -> !Modifier.isStatic(field.getModifiers()) && !Modifier.isTransient(field.getModifiers()))
-            .peek(field -> field.setAccessible(true))
-            .map(field -> createNamedTypedValue(instance, field))
-            .flatMap(Optional::stream)
-            .collect(Collectors.toList());
-}
-
-private static <T> Optional<NamedTypedValue<?>> createNamedTypedValue(T instance, Field field) {
-    try {
-        Object value = field.get(instance);
-        if (value == null) {
-            return Optional.empty();
+    private static String getFieldNameFromGetter(String getterName) {
+        if (getterName.startsWith("get")) {
+            return getterName.substring(3, 4).toLowerCase() + getterName.substring(4);
+        } else {
+            return getterName.substring(2, 3).toLowerCase() + getterName.substring(3);
         }
-
-        Class<?> fieldType = field.getType();
-        String nameOfType = fieldType.getSimpleName();
-        String name = field.getName();
-
-        return Optional.of(new NamedTypedValue<>(nameOfType, name, value));
-    } catch (IllegalAccessException e) {
-        // Handle the exception or log it appropriately
-        e.printStackTrace();
-        return Optional.empty();
     }
+    
 }
- */
