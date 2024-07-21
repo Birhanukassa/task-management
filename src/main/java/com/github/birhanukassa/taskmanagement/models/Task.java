@@ -1,61 +1,152 @@
 package com.github.birhanukassa.taskmanagement.models;
-
 import com.github.birhanukassa.taskmanagement.util.*;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
  * Represents a task with its details, status, and priority.
  */
 public class Task {
-    private String name;
-    private String description;
-
-    private int importance;
-    private int urgency ;
+    private String name = "";
+    private String description = "";
+    private int importance = 0;
+    private int urgency = 0;
     private double priorityLevel = 0;
-
-    private TaskStatus status;
-
-    private TaskLocation location;
-    private TimePeriod taskTime;
     private TimePeriod timePeriod;
-
-    private boolean isCompleted;
-
+    
     /**
-     * Constructs a Task object with a name and description.
-     *
      * @param name        the name of the task
      * @param description the description of the task
      */
     public Task(String name, String description) {
         this.name = name;
         this.description = description;
-        this.status = TaskStatus.NEW;
-        this.isCompleted = false;
+        this.timePeriod = new TimePeriod.Builder().build();
     }
 
-    /**
-     * Constructs a Task object with only a name.
-     *
-     * @param name the name of the task
-     */
-    public Task(String name) {
-        this(name, null);
+    public Task(String csvString) {
+        Map<String, String> taskProperties = parseTaskPropertiesFromCsv(csvString);
+        populateTaskFromProperties(taskProperties);
+    }
+
+    private Map<String, String> parseTaskPropertiesFromCsv(String csvString) {
+        Map<String, String> taskProperties = new HashMap<>();
+        String[] parts = csvString.split(",");
+        for (String part : parts) {
+            String[] keyValue = part.split(":");
+            if (keyValue.length == 2) {
+                String key = keyValue[0].trim();
+                String value = keyValue[1].trim();
+                taskProperties.put(key, value);
+            }
+        }
+        return taskProperties;
+    }
+
+    private void populateTaskFromProperties(Map<String, String> taskProperties) {
+        TimePeriod.Builder builder = new TimePeriod.Builder();
+
+        for (Map.Entry<String, String> entry : taskProperties.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            processTaskProperty(key, value, builder);
+        }
+
+        if (builder.build() != null) {
+            this.timePeriod = builder.build();
+        } else {
+            this.timePeriod = new TimePeriod(builder);
+        }
+    }
+
+    private void processTaskProperty(String key, String value, TimePeriod.Builder builder) {
+        switch (key) {
+            case "name":
+                processNameProperty(value);
+                break;
+            case "description":
+                processDescriptionProperty(value);
+                break;
+            case "importance":
+                processImportanceProperty(value);
+                break;
+            case "urgency":
+                processUrgencyProperty(value);
+                break;
+            case "priorityLevel":
+                processPriorityLevelProperty(value);
+                break;
+            case "startDate":
+                processStartDateProperty(value, builder);
+                break;
+            case "endDate":
+                processEndDateProperty(value, builder);
+                break;
+            case "startTime":
+                processStartTimeProperty(value, builder);
+                break;
+            case "endTime":
+                processEndTimeProperty(value, builder);
+                break;
+            case "interval":
+                processIntervalProperty(value, builder);
+                break;
+            default:
+                System.out.println("Unknown task property: " + key);
+                break;
+        }
+    }
+
+    private void processStartDateProperty(String value, TimePeriod.Builder builder) {
+        if (!value.isEmpty()) builder.withStartDate(LocalDate.parse(value));
+    }
+    private void processNameProperty(String value) {
+        if (!value.isEmpty()) this.name = value;
+    }
+
+    private void processDescriptionProperty(String value) {
+        if (!value.isEmpty()) this.description = value;
+    }
+
+    private void processImportanceProperty(String value) {
+        if (!value.isEmpty()) this.importance = Integer.parseInt(value);
+    }
+
+    private void processUrgencyProperty(String value) {
+        if (!value.isEmpty()) this.urgency = Integer.parseInt(value);
+    }
+
+    private void processPriorityLevelProperty(String value) {
+        if (!value.isEmpty()) this.priorityLevel = Double.parseDouble(value);
+    }
+
+    private void processEndDateProperty(String value, TimePeriod.Builder builder) {
+        if (!value.isEmpty()) builder.withEndDate(LocalDate.parse(value));
+    }
+
+    private void processStartTimeProperty(String value, TimePeriod.Builder builder) {
+        if (!value.isEmpty()) {
+            builder.withStartTime(LocalTime.parse(value));
+        }
+    }
+
+    private void processEndTimeProperty(String value, TimePeriod.Builder builder) {
+        if (!value.isEmpty()) builder.withEndTime(LocalTime.parse(value));
+        
+    }
+
+    private void processIntervalProperty(String value, TimePeriod.Builder builder) {
+        if (!value.isEmpty()) builder.withInterval(Integer.parseInt(value));
     }
 
     /**
      * Represents the status of a task.
      */
-    public enum TaskStatus {
-        NEW,
-        IN_PROGRESS,
-        ON_HOLD,
-        COMPLETED,
-        CANCELLED
-    }
-
     public void setTaskName(String name) {
         this.name = name;
     }
@@ -96,54 +187,65 @@ public class Task {
         return urgency ;
     }
 
-    public void setTaskTime(TimePeriod taskTime) {
-        this.taskTime = taskTime;
-    }
-
-    public TimePeriod getTaskTime() {
-        return taskTime;
-    }
-
-    public void setLocation(TaskLocation location) {
-        this.location = location;
-    }
-
-    public TaskLocation getLocation() {
-        return location;
-    }
-
-   
     public void setTimePeriod(TimePeriod timePeriod) {
         this.timePeriod = timePeriod;
     }
 
-    public TimePeriod getTimePeriod() {
+    public TimePeriod getTimePeriod(){
         return timePeriod;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        timePeriod.setStartDate(startDate);
+    }
+    public LocalDate getStartDate() {
+        return timePeriod.getStartDate();
+    }
+
+    public void setEndDate(LocalDate date) {
+        timePeriod.setEndDate(date);
+    }
+
+    public LocalDate getEndDate() {
+        return timePeriod.getEndDate();
+    }
+
+    public void setStartTime(LocalTime timeStart) {
+        timePeriod.setStartTime(timeStart);
+    }
+    public LocalTime getStartTime() {
+        return timePeriod.getStartTime();
+    }
+
+    public void setEndTime(LocalTime endTime) {
+        timePeriod.setEndTime(endTime);
+    }
+
+    public LocalTime getEndTime() {
+        return timePeriod.getEndTime();
+    }
+    /**
+     * Returns a string representation of the initialized fields of the Task object.
+     *
+     */
+	public void setInterval() {
+        timePeriod.getInterval();
+	}
+
+    public int getInterval() {
+        return timePeriod.getInterval();
+    }
+
+    public List<NamedTypedValue<Object>> getFieldValues() {
+        return FieldValueMapper.getInitializedVars(this);
     }
 
     @Override
     public String toString() {
-        return getFieldValues();
+        return "Task details\n============\n" +
+            getFieldValues()
+            .stream()
+            .map(nv -> nv.getName() + ": " + nv.getValue())
+            .collect(Collectors.joining("\n")) + "\n";
     }
-    /**
-     * Represents the location details of a task.
-     */
-    public static class TaskLocation {
-        private String location;
-
-        // Constructors, getters, and setters for TaskLocation
-    }
-
-    /**
-     * Returns a string representation of the initialized fields of the Task object.
-     *
-     * @return a string with field names and values separated by newlines
-     */
-    private String getFieldValues() {
-        return FieldValueMapper.getInitializedVars(this)
-                .stream()
-                .map(nv -> nv.getName() + ": " + nv.getValue())
-                .collect(Collectors.joining("\n"));
-    }
-    
 }

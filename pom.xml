@@ -1,13 +1,22 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.birhanukassa.taskmanagement</groupId>
-  <artifactId>task-manager</artifactId>
+  <artifactId>task-management</artifactId>
   <version>1.0-SNAPSHOT</version>
 
   <properties>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
   </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>5.8.2</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
   <build>
     <plugins>

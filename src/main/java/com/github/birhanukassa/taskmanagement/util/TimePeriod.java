@@ -1,121 +1,132 @@
 package com.github.birhanukassa.taskmanagement.util;
-
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
-/**
- * Represents a time period with start and end dates/times, and an optional interval.
- */
+import com.github.birhanukassa.taskmanagement.models.NamedTypedValue;
+
 public class TimePeriod {
+
     private LocalDate startDate;
     private LocalDate endDate;
     private LocalTime startTime;
     private LocalTime endTime;
-    private Interval interval;
+    private Integer interval;
 
-    /**
-     * Constructs a TimePeriod object with start date, end date, start time, end time, and interval.
-     *
-     * @param startDate    the start date of the time period
-     * @param endDate      the end date of the time period
-     * @param startTime    the start time of the time period
-     * @param endTime      the end time of the time period
-     * @param interval     the interval between start and end times
-     */
-    public TimePeriod(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, Interval interval) {
+    public TimePeriod(Builder builder) {
+        this.startDate = builder.startDate;
+        this.endDate = builder.endDate;
+        this.startTime = builder.startTime;
+        this.endTime = builder.endTime;
+        this.interval = builder.interval;
+    }
+
+    public static class Builder {
+        private LocalDate startDate = null;
+        private LocalDate endDate = null;
+        private LocalTime startTime = null;
+        private LocalTime endTime = null;
+        private Integer interval = 0;
+
+        public Builder withStartDate(LocalDate startDate) {
+            this.startDate = startDate;
+            return this;
+        }
+
+        public Builder withEndDate(LocalDate endDate) {
+            this.endDate = endDate;
+            return this;
+        }
+
+        public Builder withStartTime(LocalTime startTime) {
+            this.startTime = startTime;
+            return this;
+        }
+
+        public Builder withEndTime(LocalTime endTime) {
+            this.endTime = endTime;
+            return this;
+        }
+
+        public Builder withInterval(Integer interval) {
+            this.interval = interval;
+            return this;
+        }
+
+        public TimePeriod build() {
+            return new TimePeriod(this);
+        }
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
+    }
+
+    public LocalTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalTime startTime) {
         this.startTime = startTime;
+    }
+
+    public LocalTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalTime endTime) {
         this.endTime = endTime;
-        this.interval = interval;
     }
 
-    /**
-     * Constructs a TimePeriod object with start date and start time.
-     *
-     * @param startDate the start date of the time period
-     * @param startTime the start time of the time period
-     */
-    public TimePeriod(LocalDate startDate, LocalTime startTime) {
-        this(startDate, null, startTime, null, null);
-    }
-
-    /**
-     * Constructs a TimePeriod object with start time and end time.
-     *
-     * @param startTime the start time of the time period
-     * @param endTime   the end time of the time period
-     */
-    public TimePeriod(LocalTime startTime, LocalTime endTime) {
-        this(null, null, startTime, endTime, null);
-    }
-
-    /**
-     * Constructs a TimePeriod object with start time, end time, and interval.
-     *
-     * @param startTime the start time of the time period
-     * @param endTime   the end time of the time period
-     * @param interval  the interval between start and end times
-     */
-    public TimePeriod(LocalTime startTime, LocalTime endTime, Interval interval) {
-        this(null, null, startTime, endTime, interval);
-    }
-
-    /**
-     * Constructs a TimePeriod object with start date and interval.
-     *
-     * @param startDate the start date of the time period
-     * @param interval  the interval between start and end times
-     */
-    public TimePeriod(LocalDate startDate, Interval interval) {
-        this(startDate, null, null, null, interval);
-    }
-
-   
-    public Interval getInterval() {
+    public Integer getInterval() {
         return interval;
     }
 
-    public void setInterval(Interval interval) {
+    public void setInterval(int interval) {
         this.interval = interval;
     }
 
-    /**
-     * Represents an interval duration.
-     */
-    public static class Interval {
-        private long value;
-        private ChronoUnit unit;
+    public static LocalDate parseLocalDate(String input) {
+        return LocalDate.parse(input, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+    }
 
-        /**
-         * Constructs an Interval object with a value and a time unit.
-         *
-         * @param value the value of the interval
-         * @param unit  the time unit of the interval (e.g., DAYS, WEEKS, MONTHS, YEARS)
-         */
-        public Interval(long value, ChronoUnit unit) {
-            this.value = value;
-            this.unit = unit;
-        }
+    public static LocalTime parseLocalTime(String input) {
+        return LocalTime.parse(input, DateTimeFormatter.ofPattern("HH:mm:ss"));
+    }
 
-        public long getValue() {
-            return value;
-        }
+    public List<NamedTypedValue<Object>> getFieldValues() {
+        return FieldValueMapper.getInitializedVars(this);
+    }
 
-        public ChronoUnit getUnit() {
-            return unit;
-        }
-
-        /**
-         * Returns the interval duration as a Duration object.
-         *
-         * @return the interval duration
-         */
-        public Duration toDuration() {
-            return Duration.of(value, unit);
-        }
+    public LocalDate getEndDate() {
+        return endDate;
     }
 }
 
+
+/*
+[
+    [ 'startingDate', 'endingDate', 'startingTime',  'endingTime',    interval ],   
+    [ 'startingDate', 'endingDate', 'startingTime',  'endingTime',    null ],
+    [ 'startingDate', 'endingDate', 'startingTime',  null,           'interval' ],
+    [ 'startingDate', 'endingDate', 'startingTime',  null,           null ],
+    [ 'startingDate', 'endingDate', null,            null,          'interval' ],
+    [ 'ingDate', 'endingDate', null,            null,           null ],
+    [ 'startingDate',  null,       'startingTime',  'endingTime', '  interval' ],
+    [ 'startingDate',  null,       'startingTime',  'endingTime',    null ],
+    [ 'startingDate',  null,       'startingTime',  null,          'interval' ],
+    [ 'startingDate',  null,       'startingTime',  null,           null ],
+
+    [ 'startingDate',  null,        null,          null,           'interval' ],
+    [ 'startingDate',  null,        null,          null,            null ],
+]
+*/

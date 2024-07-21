@@ -1,79 +1,73 @@
 package com.github.birhanukassa.taskmanagement.util;
 
 import com.github.birhanukassa.taskmanagement.models.NamedTypedValue;
-import java.util.List;
-import java.util.ArrayList;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
+import java.util.*;
 
-public class FieldValueMapper {
+public final class FieldValueMapper {
 
-    // Private constructor to prevent instantiation
     private FieldValueMapper() {
-        throw new UnsupportedOperationException(
-                "This is a utility class and cannot be instantiated");
+        // Private constructor to prevent instantiation
     }
 
-    public static <T> List<NamedTypedValue<?>> getInitializedVars(T instance) {
-        List<NamedTypedValue<?>> vars = new ArrayList<>();
+    public static <T> List<NamedTypedValue<Object>> getInitializedVars(T instance) {
+        Set<Integer> visited = new HashSet<>();
+        return getInitializedVarsRecursive(instance, visited);
+    }
+
+    private static <T> List<NamedTypedValue<Object>> getInitializedVarsRecursive(T instance, Set<Integer> visited) {
+        if (instance == null) return Collections.emptyList();
+
+        // making sure if the instance has already been visited
+        int instanceIdentityHashCode = System.identityHashCode(instance);
+        if (!visited.add(instanceIdentityHashCode))  return Collections.emptyList();
+        
+        List<NamedTypedValue<Object>> vars = new ArrayList<>();
         Field[] fields = instance.getClass().getDeclaredFields();
 
         for (Field field : fields) {
-            int modifiers = field.getModifiers();
-            if (Modifier.isStatic(modifiers) || Modifier.isTransient(modifiers)) {
-                continue; // Skip static and transient fields
-            }
-
-            field.setAccessible(true);
-
-            try {
-                Object value = field.get(instance);
-                if (value == null) {
-                    continue; // Skip null values
-                }
-
-                Class<?> fieldType = field.getType();
-                String nameOfType = fieldType.getSimpleName();
-                String name = field.getName();
-
-                vars.add(new NamedTypedValue<>(nameOfType, name, value));
-            } catch (IllegalAccessException e) {
-                // Handle the exception or log it appropriately
-                e.printStackTrace();
-            }
+            processField(instance, field, vars, visited);
         }
-
         return vars;
     }
-}
 
+    private static <T> void processField(T instance, Field field, List<NamedTypedValue<Object>> initializedVars,
+            Set<Integer> visited) {
+        try {
+            field.setAccessible(true);
+            Object value = field.get(instance);
 
-
-/*public static <T> List<NamedTypedValue<?>> getInitializedVars(T instance) {
-    return Arrays.stream(instance.getClass().getDeclaredFields())
-            .filter(field -> !Modifier.isStatic(field.getModifiers()) && !Modifier.isTransient(field.getModifiers()))
-            .peek(field -> field.setAccessible(true))
-            .map(field -> createNamedTypedValue(instance, field))
-            .flatMap(Optional::stream)
-            .collect(Collectors.toList());
-}
-
-private static <T> Optional<NamedTypedValue<?>> createNamedTypedValue(T instance, Field field) {
-    try {
-        Object value = field.get(instance);
-        if (value == null) {
-            return Optional.empty();
+            if (isFieldInitialized(value)) {
+                if (!isCustomObject(value)) {
+                    initializedVars.add(new NamedTypedValue<>(value.getClass().getName(), field.getName(), value));
+                } else {
+                    initializedVars.addAll(getInitializedVarsRecursive(value, visited));
+                }
+            }
+        } catch (IllegalAccessException e) {
+            handleException(e);
         }
+    }
 
-        Class<?> fieldType = field.getType();
-        String nameOfType = fieldType.getSimpleName();
-        String name = field.getName();
+    public static boolean isFieldInitialized(Object value) {
+        return !((value == null) || (value instanceof Boolean && !((Boolean) value))
+                || (value instanceof Character && (Character) value == '\u0000')
+                || (value instanceof Number && ((Number) value).doubleValue() == 0)
+                || (value instanceof String && ((String) value).isEmpty()));
+    }
 
-        return Optional.of(new NamedTypedValue<>(nameOfType, name, value));
-    } catch (IllegalAccessException e) {
-        // Handle the exception or log it appropriately
-        e.printStackTrace();
-        return Optional.empty();
+    private static boolean isCustomObject(Object obj) {
+        return obj instanceof com.github.birhanukassa.taskmanagement.util.TimePeriod;
+    }
+
+    private static void handleException(Exception e) {
+        Throwable cause = e.getCause();
+        if (cause instanceof NullPointerException) {
+            System.out.println("Null pointer exception occurred while invoking the method.");
+        } else if (cause instanceof IndexOutOfBoundsException) {
+            System.out.println("Index out of bounds exception occurred while invoking the method.");
+        } else {
+            System.out.println("An exception occurred while invoking the method: " + cause.getMessage());
+        }
     }
 }
- */

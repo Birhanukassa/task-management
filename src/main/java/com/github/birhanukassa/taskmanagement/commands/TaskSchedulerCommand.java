@@ -1,49 +1,46 @@
 package com.github.birhanukassa.taskmanagement.commands;
 
 import com.github.birhanukassa.taskmanagement.models.*;
-import com.github.birhanukassa.taskmanagement.util.DateTimeValidator;
 import com.github.birhanukassa.taskmanagement.util.TimePeriod;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
-
+import java.util.logging.Logger;
 public class TaskSchedulerCommand {
+    
+    private TaskSchedulerCommand() {
+        // private constructor to prevent instantiation
+    }
+    
+    private static final Logger logger = Logger.getLogger(TaskSchedulerCommand.class.getName());
     public static void setTimePeriod(
-        Task selectedTask, LocalDate startingDate, LocalTime startingTime, LocalTime endingTime, LocalDate intervalInput) {
-        boolean startDateValid = DateTimeValidator.isValidDate(startingDate);
-        boolean startTimeValid = DateTimeValidator.isValidTime(startingTime);
-        boolean endTimeValid = DateTimeValidator.isValidTime(endingTime);
-        boolean intervalValid = DateTimeValidator.isValidDate(intervalInput);
-
-        LocalDate startDate = startDateValid ? startingDate : null;
-        LocalTime timeStart = startTimeValid ? startingTime : null;
-        LocalTime timeEnd = endTimeValid ? endingTime : null;
-        LocalDate interval = intervalValid ? intervalInput : null;
-
-        if (!startDateValid) {
-            // Handle invalid start date case
+        Task selectedTask, LocalDate startingDate, LocalDate endingDate, LocalTime startingTime, LocalTime endingTime, int intervalInput) {
+        
+        
+        if (startingDate == null) {
+            logger.warning("You need to choose starting date first");
             return;
         }
+            
+        TimePeriod.Builder builder = new TimePeriod.Builder();
+        builder.withStartDate(startingDate);
 
-        TaskSchedulerCommand.setTimePeriod(selectedTask, startDate, timeStart, timeEnd, interval);
-    }
+        if (startingTime != null) {
+            builder.withStartTime(startingTime);
+            if (endingTime != null) builder.withEndTime(endingTime);
+            
+        } else {
+            if (endingTime != null) {
+                logger.warning("You need to choose starting time first");
+                return;
+            }
+        }
 
-    public TimePeriod.Interval parseInterval(String intervalString) {
-        String[] parts = intervalString.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-        int value = Integer.parseInt(parts[0]);
-        ChronoUnit unit = ChronoUnit.valueOf(parts[1].toUpperCase());
-        return new TimePeriod.Interval(value, unit);
-    }
-
-    public TimePeriod.Interval scheduleTask(Task task, String intervalString) {
-        // Schedule the task using the provided TimePeriod
-        // Implement your scheduling logic here
-        // You can use a scheduling library like Quartz or a custom implementation
-
-        String[] parts = intervalString.split("\\D+");
-        int value = Integer.parseInt(parts[0]);
-        ChronoUnit unit = ChronoUnit.valueOf(parts[1].toUpperCase());
-        return new TimePeriod.Interval(value, unit);
+        if (endingDate != null) builder.withEndDate(endingDate);
+        if (intervalInput > 0) builder.withInterval(intervalInput);
+        
+        TimePeriod timePeriod = builder.build();
+        selectedTask.setTimePeriod(timePeriod);
     }
 }
+

@@ -1,24 +1,31 @@
 package com.github.birhanukassa.taskmanagement.commands;
 
-import java.util.logging.Logger;
-
-import com.github.birhanukassa.taskmanagement.models.*;
+import com.github.birhanukassa.taskmanagement.models.Task;
 import com.github.birhanukassa.taskmanagement.util.InputHandler;
+
+import java.util.logging.Logger;
 
 public class PriorityQueueCommand implements TaskCommand<Task> {
     private static final Logger LOGGER = Logger.getLogger(PriorityQueueCommand.class.getName());
-    InputHandler inputHandler = new InputHandler();
-    NamedTypedValue<Integer> userInput;
+
+    static {
+        InputHandler.registerTypeConverter(Integer.class, Integer::valueOf);
+    }
+
+    public PriorityQueueCommand() {
+        // Private constructor to prevent instantiation of this class
+    }
 
     @Override
     public void execute(Task task) {
         double priorityLevel;
-        Integer urgency;
-        Integer importance;
+        int urgency;
+        int importance;
 
         try {
-            importance = inputHandler.getValidatedNumberInput("Rate how important the task is (1-10): ");
-            urgency = inputHandler.getValidatedNumberInput("Rate how urgent the task is (1-10): ");
+            importance = InputHandler.getUserInput("Rate how important the task is (1-10): ", Integer.class).getValue();
+            urgency = InputHandler.getUserInput("Rate how urgent the task is (1-10): ", Integer.class).getValue();
+
             priorityLevel = calculatePriorityLevel(importance, urgency);
             task.setPriorityScore(priorityLevel);
             LOGGER.info(() -> String.format("The calculated priority score is: %.2f", priorityLevel));
@@ -30,10 +37,4 @@ public class PriorityQueueCommand implements TaskCommand<Task> {
     private double calculatePriorityLevel(int importance, int urgency) {
         return (importance * 2) + (double) urgency;
     }
-
-    static {
-        InputHandler.registerTypeConverter(Integer.class, Integer::valueOf);
-    }
 }
-
-

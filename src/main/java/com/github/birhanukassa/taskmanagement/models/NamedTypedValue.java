@@ -11,11 +11,10 @@ import java.util.Objects;
  */
 
 public final class NamedTypedValue<T> implements Serializable {
-    private static final long serialVersionUID = 1L;
 
-    private final String type;
-    private final String name;
-    private final T value;
+    private String type;
+    private String name;
+    private transient T value;
 
     /** 
      * Constructs a new instance of NamedTypedValue.
@@ -42,6 +41,10 @@ public final class NamedTypedValue<T> implements Serializable {
 
     public T getValue() {
         return value;
+    }
+
+    public void setValue(T type) {
+        this.value = type;
     }
 
     @Override
