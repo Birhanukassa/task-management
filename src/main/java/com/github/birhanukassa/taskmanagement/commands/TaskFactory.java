@@ -4,26 +4,25 @@ import com.github.birhanukassa.taskmanagement.models.Task;
 import com.github.birhanukassa.taskmanagement.util.InputHandler;
 
 public class TaskFactory {
-   private String taskName;
-   private String taskDescription;
-   private Task newTask;
+ 
 
-   public Task createTask() throws Exception {
+   public static Task createTask() {
+      String taskName;
+      String taskDescription;
+      Task newTask;
       
       System.out.println("You chose creating a Task.");
-      System.out.println("==========================\n");
+      System.out.println("\n==========================\n");
 
-      InputHandler taskNameInput = new InputHandler();
-      this.taskName = taskNameInput.getUserInput(
+      taskName = InputHandler.getUserInput(
          "Enter the name of the task: ", String.class)
          .getValue();
 
-      InputHandler taskDesc = new InputHandler();
-      this.taskDescription = taskDesc.getUserInput(
+      taskDescription = InputHandler.getUserInput(
          "Enter the description of the task: ", String.class)
          .getValue();
 
-      this.newTask = new Task(taskName, taskDescription);
+      newTask = new Task(taskName, taskDescription);
       return newTask;
    }
 }

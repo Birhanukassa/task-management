@@ -1,37 +1,46 @@
 package com.github.birhanukassa.taskmanagement.commands;
 
 import com.github.birhanukassa.taskmanagement.models.*;
-import com.github.birhanukassa.taskmanagement.util.DateTimeValidator;
-
+import com.github.birhanukassa.taskmanagement.util.TimePeriod;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-
+import java.util.logging.Logger;
 public class TaskSchedulerCommand {
+    
+    private TaskSchedulerCommand() {
+        // private constructor to prevent instantiation
+    }
+    
+    private static final Logger logger = Logger.getLogger(TaskSchedulerCommand.class.getName());
     public static void setTimePeriod(
-        Task selectedTask, LocalDate startingDate, LocalTime startingTime, LocalTime endingTime, int intervalInput) {
-            boolean startDateValid = DateTimeValidator.isValidDate(startingDate);
-            boolean startTimeValid = DateTimeValidator.isValidTime(startingTime);
-            boolean endTimeValid = DateTimeValidator.isValidTime(endingTime);
-            boolean intervalValid = intervalInput > 0;
-
-        if (!startDateValid) {
-            // Handle invalid start date case
+        Task selectedTask, LocalDate startingDate, LocalDate endingDate, LocalTime startingTime, LocalTime endingTime, int intervalInput) {
+        
+        
+        if (startingDate == null) {
+            logger.warning("You need to choose starting date first");
             return;
         }
+            
+        TimePeriod.Builder builder = new TimePeriod.Builder();
+        builder.withStartDate(startingDate);
 
-        LocalTime timeStart = startTimeValid ? startingTime : null;
-        LocalTime timeEnd = endTimeValid ? endingTime : null;
-        int interval = intervalValid ? intervalInput : null;
+        if (startingTime != null) {
+            builder.withStartTime(startingTime);
+            if (endingTime != null) builder.withEndTime(endingTime);
+            
+        } else {
+            if (endingTime != null) {
+                logger.warning("You need to choose starting time first");
+                return;
+            }
+        }
 
-        selectedTask.setStartDate(startingDate);
-        selectedTask.setStartTime(timeStart);
-        selectedTask.setEndTime(timeEnd);
-        selectedTask.setInterval(interval);
-    }
-
-    public int parseInterval(String intervalString) {
-        return Integer.parseInt(intervalString);
+        if (endingDate != null) builder.withEndDate(endingDate);
+        if (intervalInput > 0) builder.withInterval(intervalInput);
+        
+        TimePeriod timePeriod = builder.build();
+        selectedTask.setTimePeriod(timePeriod);
     }
 }
 

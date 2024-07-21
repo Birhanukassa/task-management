@@ -1,5 +1,6 @@
 package com.github.birhanukassa.taskmanagement.display;
 import com.github.birhanukassa.taskmanagement.models.Task;
+
 import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
@@ -10,7 +11,6 @@ public class DisplayImpl implements TaskManagerInterface<Task> {
     public void sortThenDisplayTasks(List<Task> sharedTaskList) {
         if (!sharedTaskList.isEmpty()) {
             sharedTaskList.sort(Comparator.comparingDouble(Task::getPriorityScore).reversed());
-            logger.info("\n\nDisplaying sorted tasks:\n=======================\n");
             sharedTaskList.forEach(System.out::println);
         } else {
             logger.info("\nNo tasks to display. Please create a task first.\n");

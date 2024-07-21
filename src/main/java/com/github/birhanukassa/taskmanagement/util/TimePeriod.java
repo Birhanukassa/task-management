@@ -1,7 +1,10 @@
 package com.github.birhanukassa.taskmanagement.util;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+
+import com.github.birhanukassa.taskmanagement.models.NamedTypedValue;
 
 public class TimePeriod {
 
@@ -9,9 +12,9 @@ public class TimePeriod {
     private LocalDate endDate;
     private LocalTime startTime;
     private LocalTime endTime;
-    private int interval;
+    private Integer interval;
 
-    private TimePeriod(Builder builder) {
+    public TimePeriod(Builder builder) {
         this.startDate = builder.startDate;
         this.endDate = builder.endDate;
         this.startTime = builder.startTime;
@@ -20,11 +23,11 @@ public class TimePeriod {
     }
 
     public static class Builder {
-        private LocalDate startDate;
-        private LocalDate endDate;
-        private LocalTime startTime;
-        private LocalTime endTime;
-        private int interval;
+        private LocalDate startDate = null;
+        private LocalDate endDate = null;
+        private LocalTime startTime = null;
+        private LocalTime endTime = null;
+        private Integer interval = 0;
 
         public Builder withStartDate(LocalDate startDate) {
             this.startDate = startDate;
@@ -46,7 +49,7 @@ public class TimePeriod {
             return this;
         }
 
-        public Builder withInterval(int interval) {
+        public Builder withInterval(Integer interval) {
             this.interval = interval;
             return this;
         }
@@ -56,17 +59,12 @@ public class TimePeriod {
         }
     }
 
-    // Getters and setters
     public LocalDate getStartDate() {
         return startDate;
     }
 
     public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
     }
 
     public void setEndDate(LocalDate endDate) {
@@ -89,7 +87,7 @@ public class TimePeriod {
         this.endTime = endTime;
     }
 
-    public int getInterval() {
+    public Integer getInterval() {
         return interval;
     }
 
@@ -97,15 +95,20 @@ public class TimePeriod {
         this.interval = interval;
     }
 
-    @Override
-    public String toString() {
-        return "TimePeriod{" +
-                "startDate=" + startDate +
-                ", endDate=" + endDate +
-                ", startTime=" + startTime +
-                ", endTime=" + endTime +
-                ", interval=" + interval +
-                '}';
+    public static LocalDate parseLocalDate(String input) {
+        return LocalDate.parse(input, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+    }
+
+    public static LocalTime parseLocalTime(String input) {
+        return LocalTime.parse(input, DateTimeFormatter.ofPattern("HH:mm:ss"));
+    }
+
+    public List<NamedTypedValue<Object>> getFieldValues() {
+        return FieldValueMapper.getInitializedVars(this);
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
     }
 }
 
@@ -117,7 +120,7 @@ public class TimePeriod {
     [ 'startingDate', 'endingDate', 'startingTime',  null,           'interval' ],
     [ 'startingDate', 'endingDate', 'startingTime',  null,           null ],
     [ 'startingDate', 'endingDate', null,            null,          'interval' ],
-    [ 'startingDate', 'endingDate', null,            null,           null ],
+    [ 'ingDate', 'endingDate', null,            null,           null ],
     [ 'startingDate',  null,       'startingTime',  'endingTime', '  interval' ],
     [ 'startingDate',  null,       'startingTime',  'endingTime',    null ],
     [ 'startingDate',  null,       'startingTime',  null,          'interval' ],
