@@ -1,3 +1,4 @@
+package com.github.birhanukassa.taskmanagement.models;
 import org.junit.jupiter.api.Assertions;
 
 //...
