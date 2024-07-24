@@ -1,4 +1,5 @@
-import com.github.birhanukassa.taskmanagement.util.Validator;
+package com.github.birhanukassa.taskmanagement.util;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

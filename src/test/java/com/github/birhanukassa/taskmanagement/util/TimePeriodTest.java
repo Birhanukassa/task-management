@@ -1,3 +1,5 @@
+package com.github.birhanukassa.taskmanagement.util;
+
 import com.github.birhanukassa.taskmanagement.util.TimePeriod;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
