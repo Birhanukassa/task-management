@@ -56,7 +56,7 @@ public final class FieldValueMapper {
                 || (value instanceof String && ((String) value).isEmpty()));
     }
 
-    private static boolean isCustomObject(Object obj) {
+    static boolean isCustomObject(Object obj) {
         return obj instanceof com.github.birhanukassa.taskmanagement.util.TimePeriod;
     }
 

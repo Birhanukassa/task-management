@@ -44,7 +44,7 @@ public class App {
         return userInput.getValue().toUpperCase();
     }
 
-    private static boolean handleUserChoice(String choice) {
+    static boolean handleUserChoice(String choice) {
         switch (choice) {
             case "T" -> {
                 createNewTask();
