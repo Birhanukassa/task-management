@@ -2,7 +2,7 @@ package com.github.birhanukassa.taskmanagement.models;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class NamedTypedValueTest {
+class NamedTypedValueTest {
 
     @Test
     void testConstructor() {
@@ -18,7 +18,7 @@ public class NamedTypedValueTest {
     }
 
     @Test
-     void testConstructorWithNullName() {
+    void testConstructorWithNullName() {
         Assertions.assertThrows(NullPointerException.class, () -> new NamedTypedValue<>("String", null, "value"));
     }
 

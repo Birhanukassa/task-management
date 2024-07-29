@@ -1,5 +1,5 @@
-import com.github.birhanukassa.taskmanagement.models.Task;
-import com.github.birhanukassa.taskmanagement.models.TaskManager;
+package com.github.birhanukassa.taskmanagement.models;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -8,12 +8,12 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-public class TaskManagerTest {
+class TaskManagerTest {
 
     private static final String TEST_CSV_FILE = "src/test/resources/test_tasks.csv";
 
     @Test
-    public void testLoadTasksFromValidCsv() throws IOException {
+    void testLoadTasksFromValidCsv() throws IOException {
         TaskManager taskManager = TaskManager.getInstance();
         List<Task> tasks = taskManager.loadTasksFromCsv(TEST_CSV_FILE);
         Assertions.assertNotNull(tasks);
@@ -21,13 +21,13 @@ public class TaskManagerTest {
     }
 
     @Test
-    public void testLoadTasksFromInvalidCsv() {
+    void testLoadTasksFromInvalidCsv() {
         TaskManager taskManager = TaskManager.getInstance();
         Assertions.assertThrows(IOException.class, () -> taskManager.loadTasksFromCsv("invalid_file.csv"));
     }
 
     @Test
-    public void testUpdateTaskAndSaveToFile() throws IOException {
+    void testUpdateTaskAndSaveToFile() throws IOException {
         TaskManager taskManager = TaskManager.getInstance();
         List<Task> tasks = taskManager.loadTasksFromCsv(TEST_CSV_FILE);
         Assertions.assertNotNull(tasks);
@@ -45,7 +45,7 @@ public class TaskManagerTest {
     }
 
     @Test
-    public void testGetFieldValuesAsCsv() {
+    void testGetFieldValuesAsCsv() {
         Task task = new Task("Task Name", "Task Description");
         task.setPriorityScore(3.5);
         task.setImportance(5);

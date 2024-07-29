@@ -1,16 +1,15 @@
 package com.github.birhanukassa.taskmanagement.util;
 
-import com.github.birhanukassa.taskmanagement.util.TimePeriod;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public class TimePeriodTest {
+class TimePeriodTest {
 
     @Test
-    public void testConstructor() {
+    void testConstructor() {
         LocalDate startDate = LocalDate.now();
         LocalDate endDate = LocalDate.now().plusDays(7);
         LocalTime startTime = LocalTime.now();
@@ -33,7 +32,7 @@ public class TimePeriodTest {
     }
 
     @Test
-    public void testSetAndGetStartDate() {
+    void testSetAndGetStartDate() {
         LocalDate startDate = LocalDate.now();
         TimePeriod timePeriod = new TimePeriod.Builder().build();
         timePeriod.setStartDate(startDate);
@@ -41,8 +40,11 @@ public class TimePeriodTest {
     }
 
     @Test
-    public void testSetAndGetEndDate() {
+    void testSetAndGetEndDate() {
         LocalDate endDate = LocalDate.now().plusDays(7);
         TimePeriod timePeriod = new TimePeriod.Builder().build();
         timePeriod.setEndDate(endDate);
-        Assertions.
+        Assertions.assertEquals(endDate, timePeriod.getEndDate());
+    }
+
+}
