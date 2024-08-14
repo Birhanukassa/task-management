@@ -1,16 +1,15 @@
 package com.github.birhanukassa.taskmanagement.util;
+
 import java.util.Scanner;
 
-
 public class ScannerWrapper {
-	private final Scanner scanner;
+    private Scanner scanner;
 
-	public ScannerWrapper(Scanner scanner) {
-		this.scanner = scanner;
-	}
+    public ScannerWrapper() {
+        this.scanner = new Scanner(System.in);
+    }
 
-	public String nextLine() {
-		return scanner.nextLine();
-	}
+    public String nextLine() {
+        return scanner.nextLine();
+    }
 }
-

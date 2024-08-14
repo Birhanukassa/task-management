@@ -2,7 +2,6 @@ package com.github.birhanukassa.taskmanagement.util;
 
 import com.github.birhanukassa.taskmanagement.models.NamedTypedValue;
 import com.github.birhanukassa.taskmanagement.models.Task;
-import com.github.birhanukassa.taskmanagement.util.TaskSelector;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

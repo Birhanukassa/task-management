@@ -4,16 +4,13 @@ import com.github.birhanukassa.taskmanagement.models.NamedTypedValue;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 public class InputHandler {
     private static final Map<Class<?>, Function<String, ?>> TYPE_CONVERTERS = new ConcurrentHashMap<>();
-    private static final Scanner scanner = new Scanner(System.in);
+    private static ScannerWrapper scannerWrapper;
     private static final String EXIT_INPUT = "Q";
-
-    // b/c at some point user will use the Exit. this object pre-made for optimization
     private static final NamedTypedValue<String> EXIT_VALUE = new NamedTypedValue<>("string", "EXIT_INPUT", EXIT_INPUT);
 
     static {
@@ -22,10 +19,16 @@ public class InputHandler {
         registerTypeConverter(String.class, String::toString);
         registerTypeConverter(Integer.class, Integer::parseInt);
         registerTypeConverter(Double.class, Double::parseDouble);
+
+        scannerWrapper = new ScannerWrapper();
     }
 
-    private InputHandler() {
+    InputHandler(ScannerWrapper scannerWrapper) {
         // private constructor to prevent instantiation
+    }
+
+    public static void setScannerWrapper(ScannerWrapper newScannerWrapper) {
+        scannerWrapper = newScannerWrapper;
     }
 
     public static <T> void registerTypeConverter(Class<T> type, Function<String, T> converter) {
@@ -35,20 +38,22 @@ public class InputHandler {
     public static <T> NamedTypedValue<T> getUserInput(String message, Class<T> targetClass) {
         while (true) {
             System.out.println(message);
-            String userInput = scanner.nextLine();
+            String userInput = scannerWrapper.nextLine();
+
+            if (userInput == null) {
+                System.out.println("User input is null. Please try again.");
+                continue;
+            }
 
             if (userInput.equalsIgnoreCase(EXIT_INPUT)) return (NamedTypedValue<T>) EXIT_VALUE;
-
             if (userInput.trim().isEmpty() || !(targetClass instanceof Class<?>)) {
-                System.out.println(
-                        "The input or the target class is not valid. Please check your input and target classes");
+                System.out.println("The input or the target class is not valid. Please check your input and target classes");
                 continue;
             }
 
             Function<String, ?> converter = TYPE_CONVERTERS.get(targetClass);
             if (converter == null) {
-                System.out.println("No converter registered for type " + targetClass.getName()
-                        + ". Please register a converter first.");
+                System.out.println("No converter registered for type " + targetClass.getName() + ". Please register a converter first.");
                 return new NamedTypedValue<>(targetClass.getName(), "userInput", (T) userInput);
             }
 
@@ -56,13 +61,13 @@ public class InputHandler {
                 System.out.println("Invalid Time/Date input pattern. Please try again.");
                 continue;
             }
-            
+
             T convertedValue = targetClass.cast(TYPE_CONVERTERS.get(targetClass).apply(userInput));
             if (isValidInput(convertedValue, targetClass)) {
                 return new NamedTypedValue<>(targetClass.getName(), "convertedValue", convertedValue);
             } else {
                 System.out.println("Invalid input. Please try again.");
-            } 
+            }
         }
     }
 
@@ -78,13 +83,15 @@ public class InputHandler {
                 System.out.println("Input date is in the past. Please try again.");
                 return false;
             }
+            return true;
         } else if (type == LocalTime.class) {
             LocalTime convertedTime = (LocalTime) convertedValue;
             if (!Validator.isValidTime(convertedTime)) {
                 System.out.println("Input time is in the past. Please try again.");
                 return false;
             }
+            return true;
         }
-        return  Validator.test(convertedValue, type); 
+        return Validator.test(convertedValue, type); 
     }  
 }

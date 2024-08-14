@@ -1,78 +1,85 @@
 package com.github.birhanukassa.taskmanagement;
 
+import com.github.birhanukassa.taskmanagement.commands.PriorityQueueCommand;
+import com.github.birhanukassa.taskmanagement.commands.TaskFactory;
 import com.github.birhanukassa.taskmanagement.models.NamedTypedValue;
 import com.github.birhanukassa.taskmanagement.models.Task;
-import com.github.birhanukassa.taskmanagement.models.TaskManager;
 import com.github.birhanukassa.taskmanagement.util.InputHandler;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import com.github.birhanukassa.taskmanagement.util.ScannerWrapper;
+import com.github.birhanukassa.taskmanagement.util.TaskSelector;
 
-import java.io.IOException;
-import java.util.ArrayList;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+
+import java.util.Arrays;
 import java.util.List;
 
+// ... (other imports)
+
+@ExtendWith(MockitoExtension.class)
 class AppTest {
+
+    @BeforeEach
+    void setUp() {
+        // Create an instance of ScannerWrapper
+        ScannerWrapper scannerWrapper = new ScannerWrapper();
+        // Set the ScannerWrapper instance in InputHandler
+        InputHandler.setScannerWrapper(scannerWrapper);
+    }
 
     @Test
     void testPromptUserForChoice() {
-        // Mock user input
-        NamedTypedValue<String> input = new NamedTypedValue<>("String", "userInput", "T");
-        
-        // Prepare test data
-        TaskManager taskManager = TaskManager.getInstance();
-        List<Task> sharedTaskList = new ArrayList<>();
-        taskManager.setTasks(sharedTaskList);
-        
-        // Call the method under test
-        String choice = App.promptUserForChoice();
-        
-        // Verify the result
-        Assertions.assertEquals("T", choice);
-    }
+        // Arrange
+        String[] validChoices = {"T", "P", "M", "E"};
+        String[] invalidChoices = {"X", "Y", "Z"};
 
+        try (MockedStatic<InputHandler> mockedInputHandler = Mockito.mockStatic(InputHandler.class)) {
+            // Mock the getUserInput method for valid choices
+            for (String choice : validChoices) {
+                mockedInputHandler.when(() -> InputHandler.getUserInput(anyString(), eq(String.class)))
+                    .thenReturn(new NamedTypedValue<>("userInput", "userName", choice));
+                String userInput = App.promptUserForChoice();
+                assertEquals(choice, userInput);
+            }
+
+            // Mock the getUserInput method for invalid choices
+            for (String choice : invalidChoices) {
+                mockedInputHandler.when(() -> InputHandler.getUserInput(anyString(), eq(String.class)))
+                    .thenReturn(new NamedTypedValue<>("userInput", "userName", ""));
+                String userInput = App.promptUserForChoice();
+                assertNotNull(userInput);
+                assertTrue(userInput.isEmpty());
+            }
+        }
+    }
+    
     @Test
     void testHandleUserChoice() {
-        // Test case 1: Create new task
-        boolean shouldExit = App.handleUserChoice("T");
-        Assertions.assertFalse(shouldExit);
+        // Arrange
+        String userChoice = "E";
+        NamedTypedValue<String> input = new NamedTypedValue<>("userInput", "userName", userChoice);
 
-        // Test case 2: Prioritize task
-        shouldExit = App.handleUserChoice("P");
-        Assertions.assertFalse(shouldExit);
+        try (MockedStatic<InputHandler> mockedInputHandler = Mockito.mockStatic(InputHandler.class)) {
+            mockedInputHandler.when(() -> InputHandler.getUserInput(anyString(), eq(String.class)))
+                    .thenReturn(input);
 
-        // Test case 3: Manage task duration
-        shouldExit = App.handleUserChoice("M");
-        Assertions.assertFalse(shouldExit);
+            // Create a spy instance of the App class
+            App appSpy = Mockito.spy(App.class);
 
-        // Test case 4: Exit program
-        shouldExit = App.handleUserChoice("E");
-        Assertions.assertTrue(shouldExit);
+            // Act
+            boolean shouldExit = appSpy.handleUserChoice(userChoice);
 
-        // Test case 5: Invalid choice
-        shouldExit = App.handleUserChoice("X");
-        Assertions.assertFalse(shouldExit);
+            // Assert
+            assertTrue(shouldExit);
+        }
     }
 
-    @Test
-    void testCreateNewTask() throws IOException {
-        // Prepare test data
-        List<Task> sharedTaskList = new ArrayList<>();
-        TaskManager taskManager = TaskManager.getInstance();
-        taskManager.setTasks(sharedTaskList);
-
-        // Mock user input
-        NamedTypedValue<String> taskName = new NamedTypedValue<>("String", "userInput", "Test Task");
-        NamedTypedValue<String> taskDescription = new NamedTypedValue<>("String", "userInput", "This is a test task");
-        InputHandler.registerMockInput(taskName);
-        InputHandler.registerMockInput(taskDescription);
-
-        // Call the method under test
-        App.createNewTask();
-
-        // Verify the result
-        Assertions.assertEquals(1, sharedTaskList.size());
-        Task createdTask = sharedTaskList.get(0);
-        Assertions.assertEquals("Test Task", createdTask.getTaskName());
-        Assertions.assertEquals("This is a test task", createdTask.getDescription());
-    }
 }

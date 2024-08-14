@@ -4,6 +4,7 @@ import com.github.birhanukassa.taskmanagement.commands.*;
 import com.github.birhanukassa.taskmanagement.display.*;
 import com.github.birhanukassa.taskmanagement.models.*;
 import com.github.birhanukassa.taskmanagement.util.*;
+
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -20,6 +21,10 @@ public class App {
 
     public static void main(String[] args) {
         try {
+             // Initialize the scannerWrapper in the InputHandler class
+            ScannerWrapper scannerWrapper = new ScannerWrapper();
+            InputHandler.setScannerWrapper(scannerWrapper);
+
             runTaskManagementProgram();
         } catch (IOException e) {
             logger.severe("An error occurred: " + e.getMessage());
@@ -38,7 +43,7 @@ public class App {
         taskManager.updateTaskAndSaveToFile();
     }
 
-    private static String promptUserForChoice() {
+    static String promptUserForChoice() {
         String prompt = "\n\nEnter (T) to create new Task, (P) for Prioritizing, (M) for Managing Task Schedule, or E to exit the program: ";
         NamedTypedValue<String> userInput = InputHandler.getUserInput(prompt, String.class);
         return userInput.getValue().toUpperCase();
@@ -68,7 +73,7 @@ public class App {
         }
     }
 
-    private static void createNewTask() {
+    static void createNewTask() {
         try {
             Task newTask = TaskFactory.createTask();
             sharedTaskList.add(newTask);
@@ -77,8 +82,8 @@ public class App {
         }
     }
 
-    private static void prioritizeTask() {
-        NamedTypedValue<Task> maybeSelectedTask = TaskSelector.promptUserForTaskSelection(sharedTaskList);
+    static void prioritizeTask() {
+        NamedTypedValue<Task> maybeSelectedTask = TaskSelector.promptUserForTaskSelection(sharedTaskList, "1");
 
         if (maybeSelectedTask.getName().equals("ExitSelection")) {
             logger.info("Exiting Prioritizing a task.");
@@ -91,9 +96,8 @@ public class App {
         }
     }
 
-    private static void manageTaskDuration() {
-        NamedTypedValue<Task> maybeSelectedTask = TaskSelector.promptUserForTaskSelection(sharedTaskList);
-
+    static void manageTaskDuration() {
+        NamedTypedValue<Task> maybeSelectedTask = TaskSelector.promptUserForTaskSelection(sharedTaskList, "1");
         if (maybeSelectedTask.getValue() != null) {
             Task selectedTask = maybeSelectedTask.getValue();
             updateTaskDuration(selectedTask);
@@ -104,7 +108,7 @@ public class App {
         }
     }
 
-    private static void updateTaskDuration(Task selectedTask) {
+    static void updateTaskDuration(Task selectedTask) {
         boolean shouldContinueEditing;
         do {
             LocalDate startDate = promptAndHandleInput("getStartDate", "Enter the starting date for the task (format:MM/dd/yyyy) (or 'Q' to exit):", LocalDate.class, selectedTask);
@@ -121,7 +125,7 @@ public class App {
     }
 
     private static <T> T promptAndHandleInput(String getterName, String prompt, Class<T> type, Task task) {
-        T currentValue = getCurrentValue(getterName, task, type);
+        T currentValue = getTaskFieldValue(getterName, task, type);
 
         if (FieldValueMapper.isFieldInitialized(currentValue)) {
             System.out.println("Current value for " + prompt + " is " + currentValue + "\n. Press 'C' to change or any other key to keep it.");
@@ -133,7 +137,7 @@ public class App {
         return handleInput(input, type);
     }
 
-    private static <T> T getCurrentValue(String getterName, Task task, Class<T> type) {
+    private static <T> T getTaskFieldValue(String getterName, Task task, Class<T> type) {
         try {
             return type.cast(task.getClass().getMethod(getterName).invoke(task));
         } catch (Exception e) {
@@ -142,19 +146,17 @@ public class App {
     }
 
     private static <T> T handleInput(NamedTypedValue<T> input, Class<T> type) {
+        if (input == null) return getDefaultValue(type);
         if (input.getValue().toString().equalsIgnoreCase("Q")) return getDefaultValue(type);  
         return input.getValue();
     }
 
     private static <T> T getDefaultValue(Class<T> type) {
-        if (type == Integer.class) {
-            return type.cast(0);
-        } else if (type == char.class) {
-            return type.cast('\u0000');
-        } else if (type == String.class) {
-            return type.cast("");
-        } else {
-            return null;
-        }
-    }
+        return switch (type.getSimpleName()) {
+            case "Integer" -> type.cast(0);
+            case "Character" ->  type.cast('\u0000');
+            case "String" -> type.cast("");
+            default -> null;
+        };
+    }   
 }

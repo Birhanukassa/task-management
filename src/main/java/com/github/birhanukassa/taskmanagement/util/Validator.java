@@ -26,6 +26,7 @@ public class Validator {
         return false;
     }
 
+
     public static boolean isValidDatePattern(String userInput) {
         return userInput.matches("\\d{2}/\\d{2}/\\d{4}");
     }
@@ -41,6 +42,7 @@ public class Validator {
     public static boolean isValidTime(LocalTime time) {
         return time != null && time.isAfter(LocalTime.now());
     }
+    
     static <T extends Comparable<T>> boolean isCurrentOrAfterCurrentDateTime(T input, Supplier<ZonedDateTime> currentDateTimeSupplier) {
         ZonedDateTime currentDateTime = currentDateTimeSupplier.get();
 
