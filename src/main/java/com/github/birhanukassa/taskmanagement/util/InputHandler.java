@@ -9,71 +9,25 @@ import java.util.function.Function;
 
 public class InputHandler {
     private static final Map<Class<?>, Function<String, ?>> TYPE_CONVERTERS = new ConcurrentHashMap<>();
-    private static ScannerWrapper scannerWrapper;
     private static final String EXIT_INPUT = "Q";
     private static final NamedTypedValue<String> EXIT_VALUE = new NamedTypedValue<>("string", "EXIT_INPUT", EXIT_INPUT);
 
     static {
-        registerTypeConverter(LocalDate.class, TimePeriod::parseLocalDate);
-        registerTypeConverter(LocalTime.class, TimePeriod::parseLocalTime);
         registerTypeConverter(String.class, String::toString);
         registerTypeConverter(Integer.class, Integer::parseInt);
         registerTypeConverter(Double.class, Double::parseDouble);
-
-        scannerWrapper = new ScannerWrapper();
+        registerTypeConverter(LocalDate.class, TimePeriod::parseLocalDate);
+        registerTypeConverter(LocalTime.class, TimePeriod::parseLocalTime);
     }
 
-    InputHandler(ScannerWrapper scannerWrapper) {
-        // private constructor to prevent instantiation
-    }
-
-    public static void setScannerWrapper(ScannerWrapper newScannerWrapper) {
-        scannerWrapper = newScannerWrapper;
-    }
-
-    public static <T> void registerTypeConverter(Class<T> type, Function<String, T> converter) {
+    public static <T> void registerTypeConverter(Class type, Function<String, T> converter) {
         TYPE_CONVERTERS.put(type, converter);
     }
 
-    public static <T> NamedTypedValue<T> getUserInput(String message, Class<T> targetClass) {
-        while (true) {
-            System.out.println(message);
-            String userInput = scannerWrapper.nextLine();
-
-            if (userInput == null) {
-                System.out.println("User input is null. Please try again.");
-                continue;
-            }
-
-            if (userInput.equalsIgnoreCase(EXIT_INPUT)) return (NamedTypedValue<T>) EXIT_VALUE;
-            if (userInput.trim().isEmpty() || !(targetClass instanceof Class<?>)) {
-                System.out.println("The input or the target class is not valid. Please check your input and target classes");
-                continue;
-            }
-
-            Function<String, ?> converter = TYPE_CONVERTERS.get(targetClass);
-            if (converter == null) {
-                System.out.println("No converter registered for type " + targetClass.getName() + ". Please register a converter first.");
-                return new NamedTypedValue<>(targetClass.getName(), "userInput", (T) userInput);
-            }
-
-            if (!isValidDateTimePattern(targetClass, userInput)) {
-                System.out.println("Invalid Time/Date input pattern. Please try again.");
-                continue;
-            }
-
-            T convertedValue = targetClass.cast(TYPE_CONVERTERS.get(targetClass).apply(userInput));
-            if (isValidInput(convertedValue, targetClass)) {
-                return new NamedTypedValue<>(targetClass.getName(), "convertedValue", convertedValue);
-            } else {
-                System.out.println("Invalid input. Please try again.");
-            }
-        }
-    }
-
     public static <T> boolean isValidDateTimePattern(Class<T> type, String input) {
-        return ((type == LocalDate.class && Validator.isValidDatePattern(input)) || 
-        (type == LocalTime.class && Validator.isValidTimePattern(input)));
+        return (
+            (type == LocalDate.class && Validator.isValidDatePattern(input)) 
+            || (type == LocalTime.class && Validator.isValidTimePattern(input)));
     }
 
     public static <T> boolean isValidInput(T convertedValue, Class<T> type) {
@@ -94,4 +48,44 @@ public class InputHandler {
         }
         return Validator.test(convertedValue, type); 
     }  
+
+    static <T> T convertInput(String userInput, Class<T> targetClass) {
+        if (userInput == null || userInput.isEmpty()) {
+            promptForInput("User input is null. Please try again.");
+            return null;
+        }
+
+        Function<String, ?> converter = TYPE_CONVERTERS.get(targetClass);
+        if (converter == null) {
+            promptForInput("No converter registered for type " + targetClass.getName() + ". Please register a converter first.");
+            return null;
+        }
+
+        if (targetClass.equals(LocalDate.class) || targetClass.equals(LocalTime.class)) {
+            if (!isValidDateTimePattern(targetClass, userInput)) {
+                return null;
+            }
+        }
+
+        return targetClass.cast(TYPE_CONVERTERS.get(targetClass).apply(userInput));
+    }
+
+    private static String promptForInput(String prompt) {
+        System.out.println(prompt);
+        return  ScannerWrapper.nextLine();
+    }
+
+    public static <T> NamedTypedValue<T> getUserInput(String message, Class<T> targetClass) {
+        while (true) {
+            String userInput = promptForInput(message.trim());
+            
+            if (userInput.equalsIgnoreCase(EXIT_INPUT)) return (NamedTypedValue<T>) EXIT_VALUE;
+
+            T convertedValue = convertInput(userInput, targetClass);
+            if (isValidInput(convertedValue, targetClass)) {
+                return new NamedTypedValue<>(targetClass.getName(), "convertedValue", convertedValue);
+            }
+        }  
+    }
 }
+

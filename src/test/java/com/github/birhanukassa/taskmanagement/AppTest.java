@@ -1,14 +1,7 @@
 package com.github.birhanukassa.taskmanagement;
 
-import com.github.birhanukassa.taskmanagement.commands.PriorityQueueCommand;
-import com.github.birhanukassa.taskmanagement.commands.TaskFactory;
 import com.github.birhanukassa.taskmanagement.models.NamedTypedValue;
-import com.github.birhanukassa.taskmanagement.models.Task;
 import com.github.birhanukassa.taskmanagement.util.InputHandler;
-import com.github.birhanukassa.taskmanagement.util.ScannerWrapper;
-import com.github.birhanukassa.taskmanagement.util.TaskSelector;
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.MockedStatic;
@@ -19,21 +12,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 
-import java.util.Arrays;
-import java.util.List;
-
 // ... (other imports)
 
 @ExtendWith(MockitoExtension.class)
 class AppTest {
-
-    @BeforeEach
-    void setUp() {
-        // Create an instance of ScannerWrapper
-        ScannerWrapper scannerWrapper = new ScannerWrapper();
-        // Set the ScannerWrapper instance in InputHandler
-        InputHandler.setScannerWrapper(scannerWrapper);
-    }
 
     @Test
     void testPromptUserForChoice() {
@@ -72,7 +54,7 @@ class AppTest {
                     .thenReturn(input);
 
             // Create a spy instance of the App class
-            App appSpy = Mockito.spy(App.class);
+            App  appSpy = Mockito.spy(App.class);
 
             // Act
             boolean shouldExit = appSpy.handleUserChoice(userChoice);
@@ -81,5 +63,4 @@ class AppTest {
             assertTrue(shouldExit);
         }
     }
-
 }

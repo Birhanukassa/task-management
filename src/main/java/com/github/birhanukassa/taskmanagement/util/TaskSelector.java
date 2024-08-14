@@ -5,13 +5,16 @@ import com.github.birhanukassa.taskmanagement.models.Task;
 
 import java.util.List;
 
+import static com.github.birhanukassa.taskmanagement.util.ScannerWrapper.*;
+
 public class TaskSelector {
     private TaskSelector() {
         // Private constructor to prevent instantiation
     }
 
-    public static NamedTypedValue<Task> promptUserForTaskSelection(List<Task> tasks, String userInput) {
+    public static NamedTypedValue<Task> promptUserForTaskSelection(List<Task> tasks) {
         System.out.println("Select a task by entering the task key, or enter 'E' to exit");
+        String userInput = ScannerWrapper.nextLine();
 
         Task selectedTask = null;
         try {
