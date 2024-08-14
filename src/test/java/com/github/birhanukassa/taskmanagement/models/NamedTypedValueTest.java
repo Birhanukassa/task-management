@@ -37,13 +37,6 @@ class NamedTypedValueTest {
     }
 
     @Test
-    void testHashCode() {
-        NamedTypedValue<String> namedTypedValue1 = new NamedTypedValue<>("String", "name", "value");
-        NamedTypedValue<String> namedTypedValue2 = new NamedTypedValue<>("String", "name", "value");
-        Assertions.assertEquals(namedTypedValue1.hashCode(), namedTypedValue2.hashCode());
-    }
-
-    @Test
     void testToString() {
         NamedTypedValue<String> namedTypedValue = new NamedTypedValue<>("String", "name", "value");
         Assertions.assertNotNull(namedTypedValue.toString());

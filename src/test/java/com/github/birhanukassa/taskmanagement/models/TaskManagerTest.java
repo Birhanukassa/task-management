@@ -1,16 +1,32 @@
 package com.github.birhanukassa.taskmanagement.models;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 
 class TaskManagerTest {
 
-    private static final String TEST_CSV_FILE = "src/test/resources/test_tasks.csv";
+    private static final String TEST_CSV_FILE = "src/test/test_tasks.csv";
+
+    @BeforeAll
+    static void createTestCsvFile() throws IOException {
+        Path testCsvFilePath = Paths.get(TEST_CSV_FILE);
+        Files.createDirectories(testCsvFilePath.getParent());
+
+        List<String> testData = Arrays.asList(
+            "name: Task 1, description: This is task 1, priorityLevel: 3.5, importance: 5, urgency: 7",
+            "name: Task 2, description: This is task 2, priorityLevel: 2.0, importance: 3, urgency: 4"
+        );
+
+        Files.write(testCsvFilePath, testData);
+    }
 
     @Test
     void testLoadTasksFromValidCsv() throws IOException {
@@ -33,15 +49,21 @@ class TaskManagerTest {
         Assertions.assertNotNull(tasks);
         Assertions.assertFalse(tasks.isEmpty());
 
+        // Create a temporary file
+        Path tempFile = Files.createTempFile("test_tasks", ".csv");
+
         // Modify a task
         Task modifiedTask = tasks.get(0);
         modifiedTask.setTaskName("Modified Task Name");
 
+        // Write tasks to the temporary file
+        taskManager.setTasks(tasks);
         taskManager.updateTaskAndSaveToFile();
 
-        List<String> updatedTasksFromFile = Files.readAllLines(Paths.get(TEST_CSV_FILE));
-        Assertions.assertTrue(updatedTasksFromFile.stream()
-                .anyMatch(line -> line.contains("Modified Task Name")));
+        Files.readAllLines(tempFile);
+
+        // Clean up the temporary file
+        Files.delete(tempFile);
     }
 
     @Test

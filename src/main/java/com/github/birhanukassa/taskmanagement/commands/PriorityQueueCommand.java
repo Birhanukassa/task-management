@@ -34,7 +34,7 @@ public class PriorityQueueCommand implements TaskCommand<Task> {
         }
     }
 
-    private double calculatePriorityLevel(int importance, int urgency) {
+    double calculatePriorityLevel(int importance, int urgency) {
         return (importance * 2) + (double) urgency;
     }
 }

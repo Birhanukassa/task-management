@@ -8,15 +8,12 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Scanner;
 import java.util.logging.Logger;
-
 public class App {
     private static final Logger logger = Logger.getLogger(App.class.getName());
     private static final TaskManager taskManager = TaskManager.getInstance();
     private static final List<Task> sharedTaskList = taskManager.getTasks();
     private static final TaskManagerInterface<Task> display = new DisplayImpl();
-    private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
         try {
@@ -34,12 +31,12 @@ public class App {
             shouldExit = handleUserChoice(choice);
         }
         logger.info("Exiting the program...");
-        scanner.close();
+        ScannerWrapper.close();
         taskManager.updateTaskAndSaveToFile();
     }
 
-    private static String promptUserForChoice() {
-        String prompt = "\n\nEnter (T) to create new Task, (P) for Prioritizing, (M) for Managing Task Schedule, or E to exit the program: ";
+    static String promptUserForChoice() {
+        String prompt = "\n\nEnter (T) to create new Task, (P) for Prioritizing, (M) for Managing Task Schedule, or (E) to exit the program: ";
         NamedTypedValue<String> userInput = InputHandler.getUserInput(prompt, String.class);
         return userInput.getValue().toUpperCase();
     }
@@ -68,7 +65,7 @@ public class App {
         }
     }
 
-    private static void createNewTask() {
+    static void createNewTask() {
         try {
             Task newTask = TaskFactory.createTask();
             sharedTaskList.add(newTask);
@@ -77,7 +74,7 @@ public class App {
         }
     }
 
-    private static void prioritizeTask() {
+    static void prioritizeTask() {
         NamedTypedValue<Task> maybeSelectedTask = TaskSelector.promptUserForTaskSelection(sharedTaskList);
 
         if (maybeSelectedTask.getName().equals("ExitSelection")) {
@@ -91,9 +88,8 @@ public class App {
         }
     }
 
-    private static void manageTaskDuration() {
+    static void manageTaskDuration() {
         NamedTypedValue<Task> maybeSelectedTask = TaskSelector.promptUserForTaskSelection(sharedTaskList);
-
         if (maybeSelectedTask.getValue() != null) {
             Task selectedTask = maybeSelectedTask.getValue();
             updateTaskDuration(selectedTask);
@@ -104,28 +100,28 @@ public class App {
         }
     }
 
-    private static void updateTaskDuration(Task selectedTask) {
+    static void updateTaskDuration(Task selectedTask) {
         boolean shouldContinueEditing;
         do {
-            LocalDate startDate = promptAndHandleInput("getStartDate", "Enter the starting date for the task (format:MM/dd/yyyy) (or 'Q' to exit):", LocalDate.class, selectedTask);
-            LocalDate endDate = promptAndHandleInput("getEndDate", "Enter the end date for the task (format:MM/dd/yyyy) (or 'Q' to exit):", LocalDate.class, selectedTask);
-            LocalTime startTime = promptAndHandleInput("getStartTime", "Enter the starting time for the task (format:HH:mm:ss) (or 'Q' to exit):", LocalTime.class, selectedTask);
-            LocalTime endTime = promptAndHandleInput("getEndTime", "Enter the end time for the task (format:HH:mm:ss) (or 'Q' to exit):", LocalTime.class, selectedTask);
-            Integer interval = promptAndHandleInput("getInterval", "Enter the interval in number of days you would like it to reoccur (or 'Q' to exit):", Integer.class, selectedTask);
+            LocalDate startDate = promptAndHandleInput("getStartDate", "Enter the starting date for the task format: (MM/dd/yyyy) or ('Q') to exit: ", LocalDate.class, selectedTask);
+            LocalDate endDate = promptAndHandleInput("getEndDate", "Enter the end date for the task format: (MM/dd/yyyy) or ('Q') to exit: ", LocalDate.class, selectedTask);
+            LocalTime startTime = promptAndHandleInput("getStartTime", "Enter the starting time for the task format: (HH:mm:ss) or ('Q') to exit: ", LocalTime.class, selectedTask);
+            LocalTime endTime = promptAndHandleInput("getEndTime", "Enter the end time for the task format: (HH:mm:ss) or ('Q') to exit: ", LocalTime.class, selectedTask);
+            Integer interval = promptAndHandleInput("getInterval", "Enter the interval in number of days you would like it to reoccur or ('Q') to exit: ", Integer.class, selectedTask);
 
             TaskSchedulerCommand.setTimePeriod(selectedTask, startDate, endDate, startTime, endTime, interval);
 
-            System.out.println("Enter 'Q' to quit or any other key to continue editing:");
-            shouldContinueEditing = !scanner.nextLine().equalsIgnoreCase("Q");
+            System.out.println("Enter ('Q') to quit or any other key to continue editing: ");
+            shouldContinueEditing = !ScannerWrapper.nextLine().equalsIgnoreCase("Q");
         } while (shouldContinueEditing);
     }
 
     private static <T> T promptAndHandleInput(String getterName, String prompt, Class<T> type, Task task) {
-        T currentValue = getCurrentValue(getterName, task, type);
+        T currentValue = getTaskFieldValue(getterName, task, type);
 
         if (FieldValueMapper.isFieldInitialized(currentValue)) {
-            System.out.println("Current value for " + prompt + " is " + currentValue + "\n. Press 'C' to change or any other key to keep it.");
-            String choice = scanner.nextLine();
+            System.out.println("Current value for " + prompt + " is " + currentValue + ".\n Press (C) to change or any other key to keep it.");
+            String choice = ScannerWrapper.nextLine();
             if (!choice.equalsIgnoreCase("C")) return currentValue;
         }
 
@@ -133,7 +129,7 @@ public class App {
         return handleInput(input, type);
     }
 
-    private static <T> T getCurrentValue(String getterName, Task task, Class<T> type) {
+    private static <T> T getTaskFieldValue(String getterName, Task task, Class<T> type) {
         try {
             return type.cast(task.getClass().getMethod(getterName).invoke(task));
         } catch (Exception e) {
@@ -142,19 +138,20 @@ public class App {
     }
 
     private static <T> T handleInput(NamedTypedValue<T> input, Class<T> type) {
+        if (input.getName() == null) return getDefaultValue(type);
+
         if (input.getValue().toString().equalsIgnoreCase("Q")) return getDefaultValue(type);  
         return input.getValue();
     }
 
     private static <T> T getDefaultValue(Class<T> type) {
-        if (type == Integer.class) {
-            return type.cast(0);
-        } else if (type == char.class) {
-            return type.cast('\u0000');
-        } else if (type == String.class) {
-            return type.cast("");
-        } else {
-            return null;
-        }
-    }
+        return switch (type.getSimpleName()) {
+            case "Integer" -> type.cast(0);
+            case "Character" ->  type.cast('\u0000');
+            case "String" -> type.cast("");
+            default -> null;
+        };
+    }   
 }
+
+

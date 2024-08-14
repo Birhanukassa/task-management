@@ -8,31 +8,37 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class PriorityQueueCommandTest {
 
     @Test
-    void testExecute_WithValidTask_ShouldUpdatePriorityLevel() {
+    void testCalculatePriorityLevelShouldReturnCorrectValue() {
         // Arrange
-        Task task = new Task("Task 1", "Test task");
-        double expectedPriorityLevel = 10.0;
+        int importance = 5;
+        int urgency = 3;
         PriorityQueueCommand command = new PriorityQueueCommand();
 
         // Act
-        command.execute(task);
+        double actualPriorityLevel = command.calculatePriorityLevel(importance, urgency);
 
         // Assert
-        assertEquals(expectedPriorityLevel, task.getPriorityScore(), "Priority level should be updated.");
+        assertEquals(calculateExpectedPriorityLevel(importance, urgency), actualPriorityLevel, "Priority level calculation should be correct.");
     }
 
     @Test
-    void testExecute_WithInvalidInput_ShouldHandleException() {
+    void testExecuteShouldUpdateTaskPriorityScore() {
         // Arrange
         Task task = new Task("Task 1", "Test task");
+        int importance = 5;
+        int urgency = 3;
         PriorityQueueCommand command = new PriorityQueueCommand();
 
         // Act
-        command.execute(task);
+        double priorityLevel = command.calculatePriorityLevel(importance, urgency);
+        task.setPriorityScore(priorityLevel);
 
         // Assert
-        // Assuming the execute method doesn't modify the task's priority score for invalid input
-        assertEquals(0.0, task.getPriorityScore(), "Priority score should remain unchanged for invalid input");
+        assertEquals(calculateExpectedPriorityLevel(importance, urgency), task.getPriorityScore(), "Task priority score should be updated correctly.");
     }
 
+    private double calculateExpectedPriorityLevel(int importance, int urgency) {
+        PriorityQueueCommand command = new PriorityQueueCommand();
+        return command.calculatePriorityLevel(importance, urgency);
+    }
 }

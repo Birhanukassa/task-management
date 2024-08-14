@@ -2,7 +2,6 @@ package com.github.birhanukassa.taskmanagement.util;
 
 import com.github.birhanukassa.taskmanagement.models.NamedTypedValue;
 import com.github.birhanukassa.taskmanagement.models.Task;
-import com.github.birhanukassa.taskmanagement.util.TaskSelector;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -19,17 +18,17 @@ class TaskSelectorTest {
         tasks.add(new Task("Task 3", "Description 3"));
 
         // Test valid task selection
-        NamedTypedValue<Task> selection = TaskSelector.promptUserForTaskSelection(tasks, "1");
+        NamedTypedValue<Task> selection = TaskSelector.promptUserForTaskSelection(tasks);
         Assertions.assertEquals("SelectedTask", selection.getName());
         Assertions.assertEquals(tasks.get(0), selection.getValue());
 
         // Test exit selection
-        selection = TaskSelector.promptUserForTaskSelection(tasks, "E");
+        selection = TaskSelector.promptUserForTaskSelection(tasks);
         Assertions.assertEquals("ExitSelection", selection.getName());
         Assertions.assertNull(selection.getValue());
 
         // Test invalid input
-        selection = TaskSelector.promptUserForTaskSelection(tasks, "invalid");
+        selection = TaskSelector.promptUserForTaskSelection(tasks);
         Assertions.assertEquals("ErrorSelection", selection.getName());
         Assertions.assertNull(selection.getValue());
     }
@@ -40,17 +39,17 @@ class TaskSelectorTest {
         tasks.add(new Task("Task 1", "Description 1"));
 
         // Test valid input
-        NamedTypedValue<Task> selection = TaskSelector.promptUserForTaskSelection(tasks, "1");
+        NamedTypedValue<Task> selection = TaskSelector.promptUserForTaskSelection(tasks);
         Assertions.assertEquals("SelectedTask", selection.getName());
         Assertions.assertEquals(tasks.get(0), selection.getValue());
 
         // Test exit input
-        selection = TaskSelector.promptUserForTaskSelection(tasks, "E");
+        selection = TaskSelector.promptUserForTaskSelection(tasks);
         Assertions.assertEquals("ExitSelection", selection.getName());
         Assertions.assertNull(selection.getValue());
 
         // Test invalid input
-        selection = TaskSelector.promptUserForTaskSelection(tasks, "invalid");
+        selection = TaskSelector.promptUserForTaskSelection(tasks);
         Assertions.assertEquals("ErrorSelection", selection.getName());
         Assertions.assertNull(selection.getValue());
     }
