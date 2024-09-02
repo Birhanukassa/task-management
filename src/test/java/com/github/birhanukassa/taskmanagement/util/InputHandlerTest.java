@@ -1,5 +1,9 @@
 package com.github.birhanukassa.taskmanagement.util;
 import com.github.birhanukassa.taskmanagement.models.NamedTypedValue;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.MockedStatic;
@@ -36,21 +40,65 @@ class InputHandlerTest {
 
     @Test
     void testIsValidDateTimePattern() {
-        assertTrue(InputHandler.isValidDateTimePattern(LocalDate.class, "06/01/2030"));
-        assertTrue(InputHandler.isValidDateTimePattern(LocalTime.class, "12:34"));
+
+        String[] validDateInputs = { "05/05/2026", "12/31/2030"};
+        String[] invalidDateInputs = { "", "13/29/27", "00/02/2029", "06/2029", "10-02-2026"};
+        String[] validTimeInputs = { "00:00", "00:12"};
+        String[] invalidTimeInputs = { "", "12:40:00", "12-40-02"};
+
+        List<String[]> collOfInputs = new ArrayList<>();
+        collOfInputs.add(validDateInputs);
+        collOfInputs.add(invalidDateInputs);
+        collOfInputs.add(validTimeInputs);
+        collOfInputs.add(invalidTimeInputs);
+
+        for (String[] inputs: collOfInputs) {
+            for (String input: inputs) {
+                if (inputs == validDateInputs) {
+                    assertTrue(InputHandler.isValidDateTimePattern(LocalDate.class, input));
+                } 
+                
+                if (inputs == invalidDateInputs) {
+                    assertFalse(InputHandler.isValidDateTimePattern(LocalDate.class, input));
+                } 
+                
+                if (inputs == validTimeInputs) {
+                    assertTrue(InputHandler.isValidDateTimePattern(LocalTime.class, input));
+                } 
+                
+                if (inputs == invalidDateInputs) {
+                    assertTrue(InputHandler.isValidDateTimePattern(LocalTime.class, input));
+                }
+            }
+        }
+    }
+
+    private void mockValidatorMethods(MockedStatic<Validator> mockedValidator) {
+        mockedValidator.when(() -> Validator.isValidDatePattern("05/05/2030")).thenReturn(true);
+        mockedValidator.when(() -> Validator.isValidDatePattern("15/02/2023")).thenReturn(false);
+        mockedValidator.when(() -> Validator.isValidTimePattern("12:30")).thenReturn(true);
+        mockedValidator.when(() -> Validator.isValidTimePattern("invalid-time")).thenReturn(false);
+    }
+
+    @Test
+    void testIsValidDateTimePatternWithMock() {
+        try (MockedStatic<Validator> mockedValidator = Mockito.mockStatic(Validator.class)) {
+            mockValidatorMethods(mockedValidator);
+
+            assertTrue(InputHandler.isValidDateTimePattern(LocalDate.class, "05/05/2030"));
+            assertFalse(InputHandler.isValidDateTimePattern(LocalDate.class, "15/02/2023"));
+            assertTrue(InputHandler.isValidDateTimePattern(LocalTime.class, "12:30"));
+            assertFalse(InputHandler.isValidDateTimePattern(LocalTime.class, "invalid-time"));
+        }
     }
 
     @Test
     void testIsValidInput() {
+            
         LocalDate validDate = LocalDate.now().plusDays(1);
         LocalDate invalidDate = LocalDate.now().minusDays(1);
         assertTrue(InputHandler.isValidInput(validDate, LocalDate.class));
         assertFalse(InputHandler.isValidInput(invalidDate, LocalDate.class));
-
-        LocalTime validTime = LocalTime.now().plusHours(1);
-        LocalTime invalidTime = LocalTime.now().minusHours(1);
-        assertTrue(InputHandler.isValidInput(validTime, LocalTime.class));
-        assertFalse(InputHandler.isValidInput(invalidTime, LocalTime.class));
     }
 
     @Test
@@ -84,10 +132,11 @@ class InputHandlerTest {
         }
     }
 
+    // Testing with mock 
     @Test
-    void testIsValidInputPatternForDate() {
+    void testIsValidInputPatternForDateWithMock() {
         try (MockedStatic<InputHandler> mockedInputHandler = Mockito.mockStatic(InputHandler.class)) {
-            mockedInputHandler.when(() -> InputHandler.isValidDateTimePattern(LocalDate.class, anyString()))
+            mockedInputHandler.when(() -> InputHandler.isValidDateTimePattern(eq(LocalDate.class), anyString()))
                     .thenCallRealMethod();
 
             // Test valid date patterns
@@ -97,13 +146,12 @@ class InputHandlerTest {
             assertTrue(InputHandler.isValidDateTimePattern(LocalDate.class, "10/01/2027"));
             
             // with incorrect month 
-            assertFalse(InputHandler.isValidDateTimePattern(LocalDate.class, "15/02/2026"));
+            assertFalse(InputHandler.isValidDateTimePattern(LocalDate.class, "15/02/2028"));
             // with incorrect day
-            assertFalse(InputHandler.isValidDateTimePattern(LocalDate.class, "05/32/2029"));
+            assertFalse(InputHandler.isValidDateTimePattern(LocalDate.class, "05/00/2029"));
             // with incorrect year
             assertFalse(InputHandler.isValidDateTimePattern(LocalDate.class, "05/22/202"));
             
         }
     }
-
 }

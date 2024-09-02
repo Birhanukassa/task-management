@@ -1,12 +1,15 @@
 package com.github.birhanukassa.taskmanagement.util;
 
-import com.github.birhanukassa.taskmanagement.models.NamedTypedValue;
 import com.github.birhanukassa.taskmanagement.models.Task;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.mockito.Mockito.when;
 
 class TaskSelectorTest {
 
@@ -17,40 +20,30 @@ class TaskSelectorTest {
         tasks.add(new Task("Task 2", "Description 2"));
         tasks.add(new Task("Task 3", "Description 3"));
 
-        // Test valid task selection
-        NamedTypedValue<Task> selection = TaskSelector.promptUserForTaskSelection(tasks);
-        Assertions.assertEquals("SelectedTask", selection.getName());
-        Assertions.assertEquals(tasks.get(0), selection.getValue());
+        try (MockedStatic<ScannerWrapper> mockedScanner = Mockito.mockStatic(ScannerWrapper.class)) {
+            // Mock the behavior of ScannerWrapper.nextLine()
+            when(ScannerWrapper.nextLine()).thenReturn("1");
 
-        // Test exit selection
-        selection = TaskSelector.promptUserForTaskSelection(tasks);
-        Assertions.assertEquals("ExitSelection", selection.getName());
-        Assertions.assertNull(selection.getValue());
+            // Test valid task selection
+            com.github.birhanukassa.taskmanagement.models.NamedTypedValue<Task> selection = TaskSelector.promptUserForTaskSelection(tasks);
+            Assertions.assertEquals("SelectedTask", selection.getName());
+            Assertions.assertEquals(tasks.get(0), selection.getValue());
 
-        // Test invalid input
-        selection = TaskSelector.promptUserForTaskSelection(tasks);
-        Assertions.assertEquals("ErrorSelection", selection.getName());
-        Assertions.assertNull(selection.getValue());
-    }
+            // Mock the behavior of ScannerWrapper.nextLine() for exit input
+            when(ScannerWrapper.nextLine()).thenReturn("E");
 
-    @Test
-    void testUserInputMocking() {
-        List<Task> tasks = new ArrayList<>();
-        tasks.add(new Task("Task 1", "Description 1"));
+            // Test exit selection
+            selection = TaskSelector.promptUserForTaskSelection(tasks);
+            Assertions.assertEquals("ExitSelection", selection.getName());
+            Assertions.assertNull(selection.getValue());
 
-        // Test valid input
-        NamedTypedValue<Task> selection = TaskSelector.promptUserForTaskSelection(tasks);
-        Assertions.assertEquals("SelectedTask", selection.getName());
-        Assertions.assertEquals(tasks.get(0), selection.getValue());
+            // Mock the behavior of ScannerWrapper.nextLine() for invalid input
+            when(ScannerWrapper.nextLine()).thenReturn("invalid");
 
-        // Test exit input
-        selection = TaskSelector.promptUserForTaskSelection(tasks);
-        Assertions.assertEquals("ExitSelection", selection.getName());
-        Assertions.assertNull(selection.getValue());
-
-        // Test invalid input
-        selection = TaskSelector.promptUserForTaskSelection(tasks);
-        Assertions.assertEquals("ErrorSelection", selection.getName());
-        Assertions.assertNull(selection.getValue());
+            // Test invalid input
+            selection = TaskSelector.promptUserForTaskSelection(tasks);
+            Assertions.assertEquals("ErrorSelection", selection.getName());
+            Assertions.assertNull(selection.getValue());
+        }
     }
 }

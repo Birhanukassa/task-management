@@ -34,9 +34,11 @@ public class Task {
         populateTaskFromProperties(taskProperties);
     }
 
+    // parses task properties from csv file 
     private Map<String, String> parseTaskPropertiesFromCsv(String csvString) {
         Map<String, String> taskProperties = new HashMap<>();
         String[] parts = csvString.split(",");
+
         for (String part : parts) {
             String[] keyValue = part.split(":");
             if (keyValue.length == 2) {
@@ -48,6 +50,7 @@ public class Task {
         return taskProperties;
     }
 
+    // populates task fields from task properties
     private void populateTaskFromProperties(Map<String, String> taskProperties) {
         TimePeriod.Builder builder = new TimePeriod.Builder();
 
@@ -223,17 +226,6 @@ public class Task {
 
     public LocalTime getEndTime() {
         return timePeriod.getEndTime();
-    }
-    /**
-     * Returns a string representation of the initialized fields of the Task object.
-     *
-     */
-	public void setInterval() {
-        timePeriod.getInterval();
-	}
-
-    public int getInterval() {
-        return timePeriod.getInterval();
     }
 
     public List<NamedTypedValue<Object>> getFieldValues() {

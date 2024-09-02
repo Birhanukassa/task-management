@@ -2,11 +2,9 @@ package com.github.birhanukassa.taskmanagement.util;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
-import java.util.function.Supplier;
 
 public class Validator {
     private Validator() {
@@ -28,12 +26,13 @@ public class Validator {
         return false;
     }
 
+    // date formatted string input validator 
     public static boolean isValidDatePattern(String userInput) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy")
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/uuuu")
             .withResolverStyle(ResolverStyle.STRICT);
 
         try {
-            LocalDate.parse(userInput, formatter);
+            isValidDate(LocalDate.parse(userInput, formatter));
             return true;
         } catch (DateTimeParseException e) {
             System.out.println(e);
@@ -41,30 +40,24 @@ public class Validator {
         }
     }
 
-    public static boolean isValidTimePattern(String userInput) {
-        return userInput.matches("^(0[0-6]|1\\d|2[0-3]):[0-5]\\d$");
+    // time formatted string input validator
+    public static boolean isValidTimePattern(String timeStr) {
+        final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        try {
+            isValidTime(LocalTime.parse(timeStr, timeFormatter));
+            return true;
+        } catch (DateTimeParseException e) {
+            return false;
+        }
     }
-
+    
     public static boolean isValidDate(LocalDate userInput) {
         return userInput != null && !(userInput).isBefore(LocalDate.now());
     }
 
     public static boolean isValidTime(LocalTime time) {
-        System.out.println(LocalDate.now().toString());
-        return time != null && time.isAfter(LocalTime.now());
+        return time != null && !(time).isBefore(LocalTime.now());
     }
-    
-    // static <T extends Comparable<T>> boolean isCurrentOrAfterCurrentDateTime(T input, Supplier<ZonedDateTime> currentDateTimeSupplier) {
-    //     ZonedDateTime currentDateTime = currentDateTimeSupplier.get();
-
-    //     if (input instanceof LocalDate inputDate) {
-    //         return !inputDate.isBefore(currentDateTime.toLocalDate());
-    //     } else if (input instanceof LocalTime inputTime) {
-    //         return !inputTime.isBefore(currentDateTime.toLocalTime());
-    //     } else {
-    //         return false;
-    //     }
-    // }
 
     private static boolean isValidStringOrChar(Object userInput) {
         return (userInput instanceof String) && !((String) userInput).isEmpty()

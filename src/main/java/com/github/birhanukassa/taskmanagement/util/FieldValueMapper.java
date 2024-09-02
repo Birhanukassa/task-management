@@ -20,7 +20,7 @@ public final class FieldValueMapper {
 
         // making sure if the instance has already been visited
         int instanceIdentityHashCode = System.identityHashCode(instance);
-        if (!visited.add(instanceIdentityHashCode))  return Collections.emptyList();
+        if (!visited.add(instanceIdentityHashCode)) return Collections.emptyList();
         
         List<NamedTypedValue<Object>> vars = new ArrayList<>();
         Field[] fields = instance.getClass().getDeclaredFields();

@@ -1,12 +1,14 @@
 package com.github.birhanukassa.taskmanagement.models;
-import com.github.birhanukassa.taskmanagement.util.*;
+
+import com.github.birhanukassa.taskmanagement.util.FieldValueMapper;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 
 public class TaskManager {
@@ -14,6 +16,9 @@ public class TaskManager {
     private static final Logger logger = Logger.getLogger(TaskManager.class.getName());
     private static TaskManager instance;
     private List<Task> tasks;
+
+    // Private constructor to prevent instantiation from outside the class
+    // 
     private TaskManager() {
         try {
             tasks = loadTasksFromCsv(FILE_PATH);
@@ -24,12 +29,11 @@ public class TaskManager {
     }
     
     public static TaskManager getInstance() {
-        if (instance == null) {
-            instance = new TaskManager();
-        }
+        if (instance == null) instance = new TaskManager();
         return instance;
     }
 
+    // 
     public List<Task> loadTasksFromCsv(String filePath) throws IOException {
         tasks = new ArrayList<>();
 

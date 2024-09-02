@@ -71,6 +71,10 @@ public class TimePeriod {
         this.endDate = endDate;
     }
 
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+    
     public LocalTime getStartTime() {
         return startTime;
     }
@@ -107,26 +111,22 @@ public class TimePeriod {
         return FieldValueMapper.getInitializedVars(this);
     }
 
-    public LocalDate getEndDate() {
-        return endDate;
-    }
 }
 
 
 /*
 [
-    [ 'startingDate', 'endingDate', 'startingTime',  'endingTime',    interval ],   
-    [ 'startingDate', 'endingDate', 'startingTime',  'endingTime',    null ],
-    [ 'startingDate', 'endingDate', 'startingTime',  null,           'interval' ],
-    [ 'startingDate', 'endingDate', 'startingTime',  null,           null ],
-    [ 'startingDate', 'endingDate', null,            null,          'interval' ],
-    [ 'ingDate', 'endingDate', null,            null,           null ],
-    [ 'startingDate',  null,       'startingTime',  'endingTime', '  interval' ],
-    [ 'startingDate',  null,       'startingTime',  'endingTime',    null ],
-    [ 'startingDate',  null,       'startingTime',  null,          'interval' ],
-    [ 'startingDate',  null,       'startingTime',  null,           null ],
-
-    [ 'startingDate',  null,        null,          null,           'interval' ],
-    [ 'startingDate',  null,        null,          null,            null ],
+    [ 'startingDate', 'endingDate', 'startingTime',   'endingTime',    interval ],   
+    [ 'startingDate', 'endingDate', 'startingTime',   'endingTime',    null ],
+    [ 'startingDate', 'endingDate', 'startingTime',    null,           'interval' ],
+    [ 'startingDate', 'endingDate', 'startingTime',    null,           null ],
+    [ 'startingDate', 'endingDate',  null,             null,           'interval' ],
+    [ 'startingDate', 'endingDate', 'endingDate',      null,            null ],
+    [ 'startingDate',  null,        'startingTime',   'endingTime',   'interval' ],
+    [ 'startingDate',  null,        'startingTime',   'endingTime',    null ],
+    [ 'startingDate',  null,        'startingTime',   null,           'interval' ],
+    [ 'startingDate',  null,        'startingTime',   null,           null ],
+    [ 'startingDate',  null,         null,            null,           'interval' ],
+    [ 'startingDate',  null,         null,            null,            null ],
 ]
 */

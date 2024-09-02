@@ -5,8 +5,6 @@ import com.github.birhanukassa.taskmanagement.models.Task;
 
 import java.util.List;
 
-import static com.github.birhanukassa.taskmanagement.util.ScannerWrapper.*;
-
 public class TaskSelector {
     private TaskSelector() {
         // Private constructor to prevent instantiation
