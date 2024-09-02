@@ -1,8 +1,10 @@
 package com.github.birhanukassa.taskmanagement;
 
+// Importing necessary classes and packages
 import com.github.birhanukassa.taskmanagement.commands.*;
 import com.github.birhanukassa.taskmanagement.display.*;
 import com.github.birhanukassa.taskmanagement.models.*;
+import com.github.birhanukassa.taskmanagement.models.NamedTypedValue;
 import com.github.birhanukassa.taskmanagement.util.*;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -37,7 +39,7 @@ public class App {
 
     static String promptUserForChoice() {
         String prompt = "\n\nEnter (T) to create new Task, (P) for Prioritizing, (M) for Managing Task Schedule, or (E) to exit the program: ";
-        NamedTypedValue<String> userInput = InputHandler.getUserInput(prompt, String.class);
+        NamedTypedValue<String> userInput =    InputHandler.getUserInput(prompt, String.class);
         return userInput.getValue().toUpperCase();
     }
 
@@ -103,11 +105,11 @@ public class App {
     static void updateTaskDuration(Task selectedTask) {
         boolean shouldContinueEditing;
         do {
-            LocalDate startDate = promptAndHandleInput("getStartDate", "Enter the starting date for the task format: (MM/dd/yyyy) or ('Q') to exit: ", LocalDate.class, selectedTask);
-            LocalDate endDate = promptAndHandleInput("getEndDate", "Enter the end date for the task format: (MM/dd/yyyy) or ('Q') to exit: ", LocalDate.class, selectedTask);
-            LocalTime startTime = promptAndHandleInput("getStartTime", "Enter the starting time for the task format: (HH:mm:ss) or ('Q') to exit: ", LocalTime.class, selectedTask);
-            LocalTime endTime = promptAndHandleInput("getEndTime", "Enter the end time for the task format: (HH:mm:ss) or ('Q') to exit: ", LocalTime.class, selectedTask);
-            Integer interval = promptAndHandleInput("getInterval", "Enter the interval in number of days you would like it to reoccur or ('Q') to exit: ", Integer.class, selectedTask);
+            LocalDate startDate = promptAndHandleInput("getStartDate", "Please enter the start date for this task in the format MM/DD/YYYY (e.g., 12/21/2024). If you wish to exit, enter 'Q': ", LocalDate.class, selectedTask);
+            LocalDate endDate = promptAndHandleInput("getEndDate", "Please enter the end date for this task in the format MM/DD/YYYY (e.g., 12/21/2024). If you wish to exit, enter 'Q' : " , LocalDate.class, selectedTask);
+            LocalTime startTime = promptAndHandleInput("getStartTime", "Please enter the start time for this task using the the 24 hour format HH:MM (e.g., 17:00). If you wish to exit, enter 'Q': ", LocalTime.class, selectedTask);
+            LocalTime endTime = promptAndHandleInput("getEndTime", "Please enter the end time for this task using the 24-hour format HH:MM (e.g., 06:00), IF you wish to exit, enter 'Q' to quite: ", LocalTime.class, selectedTask);
+            Integer interval = promptAndHandleInput("getInterval", "Please enter the interval number of days you would like it to reoccur the reschedule(e,g., 7). If you wish to exit, enter 'Q': ", Integer.class, selectedTask);
 
             TaskSchedulerCommand.setTimePeriod(selectedTask, startDate, endDate, startTime, endTime, interval);
 
@@ -140,7 +142,9 @@ public class App {
     private static <T> T handleInput(NamedTypedValue<T> input, Class<T> type) {
         if (input.getName() == null) return getDefaultValue(type);
 
-        if (input.getValue().toString().equalsIgnoreCase("Q")) return getDefaultValue(type);  
+        if (input.getValue().toString().equalsIgnoreCase("Q")) {
+            return getDefaultValue(type); 
+        } 
         return input.getValue();
     }
 

@@ -1,16 +1,18 @@
 package com.github.birhanukassa.taskmanagement.util;
 
 import com.github.birhanukassa.taskmanagement.models.NamedTypedValue;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
+// a utility class for handling user input and converting it to the desired type.
 public class InputHandler {
-    private static final Map<Class<?>, Function<String, ?>> TYPE_CONVERTERS = new ConcurrentHashMap<>();
-    private static final String EXIT_INPUT = "Q";
-    private static final NamedTypedValue<String> EXIT_VALUE = new NamedTypedValue<>("string", "EXIT_INPUT", EXIT_INPUT);
+    private static final Map<Class<?>, Function<String, ?>> TYPE_CONVERTERS = new HashMap<>();
+    private static final String EXIT_INPUT_PROMPT = "Q";
+    private static final NamedTypedValue<String> EXIT_VALUE = new NamedTypedValue<>("string", "EXIT_INPUT_PROMPT", EXIT_INPUT_PROMPT);
 
     static {
         registerTypeConverter(String.class, String::toString);
@@ -20,16 +22,19 @@ public class InputHandler {
         registerTypeConverter(LocalTime.class, TimePeriod::parseLocalTime);
     }
 
-    public static <T> void registerTypeConverter(Class type, Function<String, T> converter) {
+    // Registers a type converter for the specified class. 
+    public static synchronized <T> void registerTypeConverter(Class<T> type, Function<String, T> converter) {
         TYPE_CONVERTERS.put(type, converter);
     }
 
+    // Checks if the input string matches the expected date or time pattern for the specified class. 
     public static <T> boolean isValidDateTimePattern(Class<T> type, String input) {
         return (
             (type == LocalDate.class && Validator.isValidDatePattern(input)) 
             || (type == LocalTime.class && Validator.isValidTimePattern(input)));
     }
 
+    // Validates the converted value based on the specified class. 
     public static <T> boolean isValidInput(T convertedValue, Class<T> type) {
         if (type == LocalDate.class) {
             LocalDate convertedDate = (LocalDate) convertedValue;
@@ -49,9 +54,10 @@ public class InputHandler {
         return Validator.test(convertedValue, type); 
     }  
 
+    // Coverts the user input to the specified target class. 
     static <T> T convertInput(String userInput, Class<T> targetClass) {
         if (userInput == null || userInput.isEmpty()) {
-            promptForInput("User input is null. Please try again.");
+            promptForInput("User input can't be null or empty.");
             return null;
         }
 
@@ -61,11 +67,11 @@ public class InputHandler {
             return null;
         }
 
-        if (targetClass.equals(LocalDate.class) || targetClass.equals(LocalTime.class)) {
-            if (!isValidDateTimePattern(targetClass, userInput)) {
+        if ((targetClass.equals(LocalDate.class) || targetClass.equals(LocalTime.class)) 
+            && !isValidDateTimePattern(targetClass, userInput)) {
                 return null;
             }
-        }
+        
 
         return targetClass.cast(TYPE_CONVERTERS.get(targetClass).apply(userInput));
     }
@@ -75,11 +81,13 @@ public class InputHandler {
         return  ScannerWrapper.nextLine();
     }
 
+    // Prompts the user for input and converts it to the specified  target class. 
+    @SuppressWarnings("unchecked")
     public static <T> NamedTypedValue<T> getUserInput(String message, Class<T> targetClass) {
         while (true) {
             String userInput = promptForInput(message.trim());
             
-            if (userInput.equalsIgnoreCase(EXIT_INPUT)) return (NamedTypedValue<T>) EXIT_VALUE;
+            if (userInput.equalsIgnoreCase(EXIT_INPUT_PROMPT)) return (NamedTypedValue<T>) EXIT_VALUE;
 
             T convertedValue = convertInput(userInput, targetClass);
             if (isValidInput(convertedValue, targetClass)) {

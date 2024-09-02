@@ -16,7 +16,6 @@ public class TaskSchedulerCommand {
     public static void setTimePeriod(
         Task selectedTask, LocalDate startingDate, LocalDate endingDate, LocalTime startingTime, LocalTime endingTime, int intervalInput) {
         
-        
         if (startingDate == null) {
             logger.warning("You need to choose starting date first");
             return;
@@ -37,10 +36,15 @@ public class TaskSchedulerCommand {
         }
 
         if (endingDate != null) builder.withEndDate(endingDate);
-        if (intervalInput > 0) builder.withInterval(intervalInput);
-        
-        TimePeriod timePeriod = builder.build();
-        selectedTask.setTimePeriod(timePeriod);
+        if (intervalInput > 0) {
+            builder.withInterval(intervalInput);
+        } else {
+            logger.info("Interval need to be more than 0");
+        }
+
+        // Set the time period for the selected task
+        selectedTask.setTimePeriod(builder.build());
     }
 }
+
 
