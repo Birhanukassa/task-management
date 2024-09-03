@@ -1,8 +1,7 @@
 # Task Management
 
 ## Introduction
-
-Welcome to the Task Management repository! This project aims to provide a smooth and efficient system for managing tasks. It is designed to assist individuals and teams in tracking tasks, managing workflows, and increasing productivity.
+This is a simple Task Management application built with Java and Maven.
 
 
 ## Key Features
@@ -11,6 +10,30 @@ Welcome to the Task Management repository! This project aims to provide a smooth
 - **Workflow Management:** Customize workflows to suit the unique requirements of your projects.
 - **Progress Tracking:** Monitor task progress through various stages.
 - **Team Collaboration:** Assign tasks, share updates, and collaborate effectively with your team.
+
+## Project Structure
+
+- `src/main/java`: Contains the main Java source code
+- `src/test/java`: Contains the test Java source code
+- `pom.xml`: Maven configuration file
+
+## Key Packages
+
+- `com.github.birhanukassa.taskmanagement`: Main package
+- `com.github.birhanukassa.taskmanagement.commands`: Command classes
+- `com.github.birhanukassa.taskmanagement.display`: Display implementation
+- `com.github.birhanukassa.taskmanagement.models`: Data models
+- `com.github.birhanukassa.taskmanagement.util`: Utility classes
+
+## Building and Running the Project
+
+1. Ensure you have Java and Maven installed on your system.
+2. Navigate to the project root directory in your terminal.
+3. Run `mvn clean install` to build the project.
+4. Run `java -jar target/task-management-1.0-SNAPSHOT.jar` to start the application.
+
+## Additional Setup
+No additional setup is required for this project.
 
 ## Quick Start
 
