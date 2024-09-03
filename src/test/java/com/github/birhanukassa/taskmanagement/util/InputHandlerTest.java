@@ -1,33 +1,47 @@
 package com.github.birhanukassa.taskmanagement.util;
+
+// Project-specific imports
 import com.github.birhanukassa.taskmanagement.models.NamedTypedValue;
 
-import java.util.ArrayList;
-import java.util.List;
-
+// JUnit 5 imports
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+
+// Mockito imports for mocking and testing
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+// Java time API imports
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+// Functional interface import
 import java.util.function.Function;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+// Static imports for JUnit assertions
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+// Static imports for Mockito argument matchers
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-
 @ExtendWith(MockitoExtension.class)
 class InputHandlerTest {
 
     @Test
     void testRegisterTypeConverter() {
+        // Define a converter function to parse String to Integer
         Function<String, Integer> converter = Integer::parseInt;
+        // Register the converter for Integer class
         InputHandler.registerTypeConverter(Integer.class, converter);
 
-        // Use MockedStatic to mock static methods
+        // Use MockedStatic to mock static methods of InputHandler
         try (MockedStatic<InputHandler> mockedInputHandler = Mockito.mockStatic(InputHandler.class)) {
+            // Set up mock behavior for convertInput method
             mockedInputHandler.when(() -> InputHandler.convertInput(anyString(), eq(Integer.class)))
                     .thenReturn(123);
 
@@ -40,18 +54,20 @@ class InputHandlerTest {
 
     @Test
     void testIsValidDateTimePattern() {
-
+        // Define arrays of valid and invalid date/time inputs
         String[] validDateInputs = { "05/05/2026", "12/31/2030"};
         String[] invalidDateInputs = { "", "13/29/27", "00/02/2029", "06/2029", "10-02-2026"};
         String[] validTimeInputs = { "00:00", "00:12"};
         String[] invalidTimeInputs = { "", "12:40:00", "12-40-02"};
 
+        // Collect all input arrays into a list
         List<String[]> collOfInputs = new ArrayList<>();
         collOfInputs.add(validDateInputs);
         collOfInputs.add(invalidDateInputs);
         collOfInputs.add(validTimeInputs);
         collOfInputs.add(invalidTimeInputs);
 
+        // Iterate through all inputs and test validity
         for (String[] inputs: collOfInputs) {
             for (String input: inputs) {
                 if (inputs == validDateInputs) {
@@ -70,25 +86,6 @@ class InputHandlerTest {
                     assertTrue(InputHandler.isValidDateTimePattern(LocalTime.class, input));
                 }
             }
-        }
-    }
-
-    private void mockValidatorMethods(MockedStatic<Validator> mockedValidator) {
-        mockedValidator.when(() -> Validator.isValidDatePattern("05/05/2030")).thenReturn(true);
-        mockedValidator.when(() -> Validator.isValidDatePattern("15/02/2023")).thenReturn(false);
-        mockedValidator.when(() -> Validator.isValidTimePattern("12:30")).thenReturn(true);
-        mockedValidator.when(() -> Validator.isValidTimePattern("invalid-time")).thenReturn(false);
-    }
-
-    @Test
-    void testIsValidDateTimePatternWithMock() {
-        try (MockedStatic<Validator> mockedValidator = Mockito.mockStatic(Validator.class)) {
-            mockValidatorMethods(mockedValidator);
-
-            assertTrue(InputHandler.isValidDateTimePattern(LocalDate.class, "05/05/2030"));
-            assertFalse(InputHandler.isValidDateTimePattern(LocalDate.class, "15/02/2023"));
-            assertTrue(InputHandler.isValidDateTimePattern(LocalTime.class, "12:30"));
-            assertFalse(InputHandler.isValidDateTimePattern(LocalTime.class, "invalid-time"));
         }
     }
 

@@ -1,5 +1,7 @@
+// Package declaration
 package com.github.birhanukassa.taskmanagement.models;
 
+// Importing necessary classes 
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -48,18 +50,15 @@ public final class NamedTypedValue<T> implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        NamedTypedValue<?> that = (NamedTypedValue<?>) o;
-        return type.equals(that.type) && name.equals(that.name) && Objects.equals(value, that.value);
-    }
-
-    @Override
     public int hashCode() {
         return Objects.hash(type, name, value);
     }
 
+    /**
+     * Returns a string representation of the NamedTypedValue object.
+     *
+     * @return a string representation of the object
+     */
     @Override
     public String toString() {
         return "NamedTypedValue{" +
