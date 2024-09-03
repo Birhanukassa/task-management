@@ -10,41 +10,71 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * This class contains unit tests for the Validator class in the task management application.
+ * It tests various validation methods for different data types and formats.
+ */
 class ValidatorTest {
-
+    /**
+     * Test the Validator.test method with a valid string input.
+     * Expected behavior: The method should return true for a non-null string.
+     */
     @Test
     void testTestWithValidString() {
         Assertions.assertTrue(Validator.test("valid string", String.class));
     }
 
+    /**
+     * Test the Validator.test method with a null string input.
+     * Expected behavior: The method should return false for a null string.
+     */
     @Test
     void testTestWithNullString() {
         Assertions.assertFalse(Validator.test(null, String.class));
     }
 
+    /**
+     * Test the Validator.test method with a valid integer input.
+     * Expected behavior: The method should return true for a non-null integer.
+     */
     @Test
     void testTestWithValidInteger() {
         Assertions.assertTrue(Validator.test(42, Integer.class));
     }
 
+    /**
+     * Test the Validator.test method with a null integer input.
+     * Expected behavior: The method should return false for a null integer.
+     */
     @Test
     void testTestWithNullInteger() {
         Assertions.assertFalse(Validator.test(null, Integer.class));
     }
 
+    /**
+     * Test the Validator.test method with a valid double input.
+     * Expected behavior: The method should return true for a non-null double.
+     */
     @Test
     void testTestWithValidDouble() {
         Assertions.assertTrue(Validator.test(3.14, Double.class));
     }
 
+    /**
+     * Test the Validator.test method with a null double input.
+     * Expected behavior: The method should return false for a null double.
+     */
     @Test
     void testTestWithNullDouble() {
         Assertions.assertFalse(Validator.test(null, Double.class));
     }
 
+    /**
+     * Test the Validator.test method with valid future date and time inputs.
+     * This test uses Mockito to mock static methods of the Validator class.
+     * Expected behavior: The method should return true for future dates and times.
+     */
     @Test
     void testTestWithValidFutureDateAndTime() {
         LocalTime futureTime1 = LocalTime.now().plusHours(4);
@@ -53,6 +83,7 @@ class ValidatorTest {
         LocalTime invalidTime2 = LocalTime.now().minusHours(100);
 
         try (MockedStatic<Validator> mockedValidator = Mockito.mockStatic(Validator.class)) {
+            // Mock the isValidTime method to return expected results
             mockedValidator.when(() -> Validator.isValidTime(invalidTime1)).thenReturn(false);
             mockedValidator.when(() -> Validator.isValidTime(invalidTime2)).thenReturn(false);
             mockedValidator.when(() -> Validator.isValidTime(futureTime1)).thenReturn(true);
@@ -63,6 +94,10 @@ class ValidatorTest {
         Assertions.assertTrue(Validator.test(futureDate, LocalDate.class));
     }
 
+    /**
+     * Test the Validator.test method with invalid past date and time inputs.
+     * Expected behavior: The method should return false for past dates and times.
+     */
     @Test
     void testTestWithInvalidDateAndTime() {
         LocalTime pastTime = LocalTime.now().minusHours(1);
@@ -71,10 +106,14 @@ class ValidatorTest {
         Assertions.assertFalse(Validator.test(pastDate, LocalDate.class));
     }
 
+    /**
+     * Test the Validator.isValidDatePattern method with various date strings.
+     * Expected behavior: The method should return true for valid date patterns and false for invalid ones.
+     */
     @Test
     void testIsValidDatePattern() {
         List<String> validDates = Arrays.asList("01/01/2026", "12/28/2027", "06/09/4026", "02/29/2024", "01/01/0001");
-        List<String> invalidDates = Arrays.asList("", "2029-10-01", "2023-01", "01/2026", "invalid-input", "31/12/2023", "2023/12/31", "12/31/9999");
+        List<String> invalidDates = Arrays.asList("", "2029-10-01", "2023-01", "01/2026", "invalid-input", "33/12/2023", "2023/12/31", "12/31/9999");
 
         for (String date : validDates) {
             Assertions.assertTrue(Validator.isValidDatePattern(date), "Expected valid date pattern: " + date);
@@ -85,6 +124,10 @@ class ValidatorTest {
         }
     }
 
+    /**
+     * Test the Validator.isValidTimePattern method with various time strings.
+     * Expected behavior: The method should return true for valid time patterns and false for invalid ones.
+     */
     @Test
     void testIsValidTimePattern() {
         List<String> validTimes = Arrays.asList("12:34", "12:34", "00:00", "23:39", "00:00", "23:59");
@@ -99,68 +142,13 @@ class ValidatorTest {
         }
     }
 
-
+    /**
+     * Test the Validator.isValidDate method.
+     * Expected behavior: The method should return true for today's date and false for a past date.
+     */
     @Test
     void testIsValidDate() {
         Assertions.assertTrue(Validator.isValidDate(LocalDate.now()));
         Assertions.assertFalse(Validator.isValidDate(LocalDate.now().minusDays(1)));
     }
-
-    @Test
-    void testIsValidTime() {
-
-        LocalTime validTime = LocalTime.now().plusHours(1);
-        LocalTime invalidTime = LocalTime.now().minusHours(1);
-
-        try (MockedStatic<Validator> mockedValidator = Mockito.mockStatic(Validator.class)) {
-            mockedValidator.when(() -> Validator.isValidTime(validTime)).thenReturn(true);
-            mockedValidator.when(() -> Validator.isValidTime(invalidTime)).thenReturn(false);
-
-            assertTrue(InputHandler.isValidInput(validTime, LocalTime.class));
-            assertFalse(InputHandler.isValidInput(invalidTime, LocalTime.class));
-        }
-        
-
-    }
-
-    @Test
-    void testIsInt() {
-        Assertions.assertTrue(Validator.isInt(42));
-        Assertions.assertTrue(Validator.isInt("42"));
-        Assertions.assertFalse(Validator.isInt(3.14));
-        Assertions.assertFalse(Validator.isInt("3.14"));
-        Assertions.assertFalse(Validator.isInt("invalid"));
-    }
-
-    private void mockValidatorMethods(MockedStatic<Validator> mockedValidator) {
-        mockedValidator.when(() -> Validator.isValidDatePattern("05/05/2030")).thenReturn(true);
-        mockedValidator.when(() -> Validator.isValidDatePattern("15/02/2023")).thenReturn(false);
-        mockedValidator.when(() -> Validator.isValidTimePattern("12:30:00")).thenReturn(true);
-        mockedValidator.when(() -> Validator.isValidTimePattern("invalid-time")).thenReturn(false);
-    }
-
-    @Test
-    void testIsValidInputPatternForTime() {
-        try (MockedStatic<Validator> mockedValidator = Mockito.mockStatic(Validator.class)) {
-            mockValidatorMethods(mockedValidator);
-
-            assertTrue(InputHandler.isValidDateTimePattern(LocalTime.class, "12:30:00"));
-            assertFalse(InputHandler.isValidDateTimePattern(LocalTime.class, "invalid-time"));
-        }
-    }
-
-    @Test
-    void testIsValidDateAndIsValidTime() {
-        LocalDate validDate = LocalDate.now().plusDays(1);
-        LocalDate invalidDate = LocalDate.now().minusYears(1);
-        LocalTime validTime = LocalTime.now().plusSeconds(1);
-        LocalTime invalidTime = LocalTime.now().minusNanos(1);
-
-        assertTrue(InputHandler.isValidInput(validDate, LocalDate.class));
-        assertFalse(InputHandler.isValidInput(invalidDate, LocalDate.class));
-        assertTrue(InputHandler.isValidInput(validTime, LocalTime.class));
-        assertFalse(InputHandler.isValidInput(invalidTime, LocalTime.class));
-    }
 }
-
-

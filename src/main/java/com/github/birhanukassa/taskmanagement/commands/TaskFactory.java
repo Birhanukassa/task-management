@@ -1,10 +1,16 @@
+// Package declaration
 package com.github.birhanukassa.taskmanagement.commands;
 
+// These are the import statements for the required classes
 import com.github.birhanukassa.taskmanagement.models.Task;
 import com.github.birhanukassa.taskmanagement.util.InputHandler;
 
+/**
+ * The TaskFactory class is responsible for creating new Task objects.
+ * It prompts the user to enter the name and description of the task,
+ * creates a new Task object with the provided information, and returns it.
+ */
 public class TaskFactory {
- 
 
    public static Task createTask() {
       String taskName;

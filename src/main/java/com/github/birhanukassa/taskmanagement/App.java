@@ -11,12 +11,23 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.logging.Logger;
+// Main class for the Task Management Program
+/**
+ * The main class that runs the Task Management Program.
+ * This class handles the main program flow and user interactions.
+ */
 public class App {
     private static final Logger logger = Logger.getLogger(App.class.getName());
     private static final TaskManager taskManager = TaskManager.getInstance();
     private static final List<Task> sharedTaskList = taskManager.getTasks();
     private static final TaskManagerInterface<Task> display = new DisplayImpl();
 
+    //  main method
+    /**
+     * The main method that runs the Task Management Program.
+     *
+     * @param args command-line arguments / not used
+     */
     public static void main(String[] args) {
         try {
             runTaskManagementProgram();
@@ -25,6 +36,14 @@ public class App {
         }
     }
 
+    //  this is the main method is the entry point of the program
+    /**
+     * Runs the Task Management Program.
+     * This method displays the tasks, prompts the user for input,
+     * and handles the user's choice accordingly.
+     *
+     * @throws IOException if an I/O error occurs while updating the task file
+     */
     private static void runTaskManagementProgram() throws IOException {
         boolean shouldExit = false;
         while (!shouldExit) {
@@ -36,7 +55,12 @@ public class App {
         ScannerWrapper.close();
         taskManager.updateTaskAndSaveToFile();
     }
-
+    //  this method prompts the user for input and returns the user's choice as a string
+    /**
+     * Prompts the user for input and returns the user's choice as a string.
+     *
+     * @return the user's choice as a string
+     */
     static String promptUserForChoice() {
         String prompt = "\n\nEnter (T) to create new Task, (P) for Prioritizing, (M) for Managing Task Schedule, or (E) to exit the program: ";
         NamedTypedValue<String> userInput =    InputHandler.getUserInput(prompt, String.class);
@@ -66,7 +90,11 @@ public class App {
             }
         }
     }
-
+    //  this method creates a new task and adds it to the sharedTaskList
+    /**
+     * Creates a new task and adds it to the shared task list.
+     * This method handles any exceptions that may occur during task creation.
+     */
     static void createNewTask() {
         try {
             Task newTask = TaskFactory.createTask();
@@ -75,7 +103,11 @@ public class App {
             logger.warning("An error occurred while creating a new task: " + e.getMessage());
         }
     }
-
+    //  this method allows the user to prioritize a task
+    /**
+     * Allows the user to prioritize a task.
+     * The method handles the user's choice of task to prioritize.
+     */
     static void prioritizeTask() {
         NamedTypedValue<Task> maybeSelectedTask = TaskSelector.promptUserForTaskSelection(sharedTaskList);
 
@@ -89,7 +121,11 @@ public class App {
             logger.info("No task selected for prioritization.");
         }
     }
-
+    //  this method allows the user to manage the duration of a task
+    /**
+     * Allows the user to manage the duration of a task.
+     * The method handles the user's choice of task to manage.
+     */
     static void manageTaskDuration() {
         NamedTypedValue<Task> maybeSelectedTask = TaskSelector.promptUserForTaskSelection(sharedTaskList);
         if (maybeSelectedTask.getValue() != null) {
@@ -101,7 +137,14 @@ public class App {
             logger.info("No task selected for managing.");
         }
     }
-
+    //  this method allows the user to update the duration of a task
+    /**
+     * Allows the user to update the duration of a task.
+     * The method prompts the user for the new start and end dates, start and end times, and interval.
+     *
+     * @param selectedTask the task to be updated
+     * @return void 
+     */
     static void updateTaskDuration(Task selectedTask) {
         boolean shouldContinueEditing;
         do {
@@ -117,7 +160,17 @@ public class App {
             shouldContinueEditing = !ScannerWrapper.nextLine().equalsIgnoreCase("Q");
         } while (shouldContinueEditing);
     }
-
+    //  this method prompts the user for input and handles the input
+    /**
+     * Prompts the user for input and handles the input.
+     *
+     * @param getterName the name of the getter method for the field
+     * @param prompt the prompt to display to the user
+     * @param type the type of the field
+     * @param task the task object
+     * @param <T> the type parameter
+     * @return the user's input
+     */
     private static <T> T promptAndHandleInput(String getterName, String prompt, Class<T> type, Task task) {
         T currentValue = getTaskFieldValue(getterName, task, type);
 
@@ -130,7 +183,18 @@ public class App {
         NamedTypedValue<T> input = InputHandler.getUserInput(prompt, type);
         return handleInput(input, type);
     }
-
+    //  this method gets the value of a field from a task object using reflection
+    /**
+     * Gets the value of a field from a task object using reflection.
+     *
+     * @param getterName the name of the getter method for the field
+     * @param task the task object
+     * @param type the type of the field
+     * @param <T> the type parameter
+     * @return the value of the field
+     * @see FieldValueMapper#getInitializedVars(Task)
+     * 
+     */
     private static <T> T getTaskFieldValue(String getterName, Task task, Class<T> type) {
         try {
             return type.cast(task.getClass().getMethod(getterName).invoke(task));
@@ -139,6 +203,15 @@ public class App {
         }
     }
 
+    //  this method handles the user's input
+    /**
+     * Handles the user's input.
+     *
+     * @param input the user's input
+     * @param type the type of the input
+     * @param <T> the type parameter
+     * @return the handled input
+     */
     private static <T> T handleInput(NamedTypedValue<T> input, Class<T> type) {
         if (input.getName() == null) return getDefaultValue(type);
 
@@ -147,7 +220,14 @@ public class App {
         } 
         return input.getValue();
     }
-
+    //  this method gets the default value for a type
+    /**
+     * Gets the default value for a type.
+     *
+     * @param type the type
+     * @param <T> the type parameter
+     * @return the default value for the type
+     */
     private static <T> T getDefaultValue(Class<T> type) {
         return switch (type.getSimpleName()) {
             case "Integer" -> type.cast(0);

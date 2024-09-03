@@ -1,13 +1,20 @@
+// Package declaration
 package com.github.birhanukassa.taskmanagement.commands;
 
+// import statements
 import com.github.birhanukassa.taskmanagement.models.Task;
 import com.github.birhanukassa.taskmanagement.util.InputHandler;
 
 import java.util.logging.Logger;
 
+// PriorityQueueCommand used to calculate priority score for a task
+/**
+ * This class implements the TaskCommand interface and is responsible for calculating
+ * the priority score for a given task based on the importance and urgency factors.
+ */
 public class PriorityQueueCommand implements TaskCommand<Task> {
     private static final Logger LOGGER = Logger.getLogger(PriorityQueueCommand.class.getName());
-
+    // Static initializer block to register the Integer type converter for the InputHandler or future added converters 
     static {
         InputHandler.registerTypeConverter(Integer.class, Integer::valueOf);
     }
@@ -15,7 +22,18 @@ public class PriorityQueueCommand implements TaskCommand<Task> {
     public PriorityQueueCommand() {
         // Private constructor to prevent instantiation of this class
     }
-
+    // this method is used to execute the command
+    /**
+     * Executes the command to calculate the priority score for the given task.
+     * It prompts the user to rate the importance and urgency of the task,
+     * calculates the priority score using the calculatePriorityLevel method,
+     * and sets the priority score on the task object.
+     *
+     * @param task The task for which the priority score needs to be calculated.
+     * @return void
+     * @throws Exception If any error occurs during the execution of the command.
+     * @see InputHandler#getUserInput(String, Class)
+     */
     @Override
     public void execute(Task task) {
         double priorityLevel;
@@ -33,7 +51,15 @@ public class PriorityQueueCommand implements TaskCommand<Task> {
             LOGGER.severe("Error: " + e.getMessage());
         }
     }
-
+    // this method calculates the priority score
+    /**
+     * Calculates the priority score based on the importance and urgency factors.
+     * The priority score is a weighted sum of the importance and urgency values.
+     *
+     * @param importance The importance factor (1-10).
+     * @param urgency The urgency factor (1-10).
+     * @return The calculated priority score.
+     */
     double calculatePriorityLevel(int importance, int urgency) {
         return (importance * 2) + (double) urgency;
     }
