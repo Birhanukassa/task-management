@@ -7,7 +7,7 @@ import com.github.birhanukassa.taskmanagement.util.InputHandler;
 
 import java.util.logging.Logger;
 
-// PriorityQueueCommand used to calculate priority score for a task
+
 /**
  * This class implements the TaskCommand interface and is responsible for calculating
  * the priority score for a given task based on the importance and urgency factors.
@@ -22,7 +22,7 @@ public class PriorityQueueCommand implements TaskCommand<Task> {
     public PriorityQueueCommand() {
         // Private constructor to prevent instantiation of this class
     }
-    // this method is used to execute the command
+  
     /**
      * Executes the command to calculate the priority score for the given task.
      * It prompts the user to rate the importance and urgency of the task,
@@ -51,7 +51,7 @@ public class PriorityQueueCommand implements TaskCommand<Task> {
             LOGGER.severe("Error: " + e.getMessage());
         }
     }
-    // this method calculates the priority score
+
     /**
      * Calculates the priority score based on the importance and urgency factors.
      * The priority score is a weighted sum of the importance and urgency values.
