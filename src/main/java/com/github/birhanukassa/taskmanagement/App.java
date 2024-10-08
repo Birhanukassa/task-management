@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.logging.Logger;
-// Main class for the Task Management Program
+
 /**
  * The main class that runs the Task Management Program.
  * This class handles the main program flow and user interactions.
@@ -21,7 +21,7 @@ public class App {
     private static final List<Task> sharedTaskList = taskManager.getTasks();
     private static final TaskManagerInterface<Task> display = new DisplayImpl();
 
-    //  main method
+   
     /**
      * The main method that runs the Task Management Program.
      *
@@ -35,7 +35,6 @@ public class App {
         }
     }
 
-    //  this is the main method is the entry point of the program
     /**
      * Runs the Task Management Program.
      * This method displays the tasks, prompts the user for input,
@@ -54,7 +53,7 @@ public class App {
         ScannerWrapper.close();
         taskManager.updateTaskAndSaveToFile();
     }
-    //  this method prompts the user for input and returns the user's choice as a string
+ 
     /**
      * Prompts the user for input and returns the user's choice as a string.
      *
@@ -89,7 +88,7 @@ public class App {
             }
         }
     }
-    //  this method creates a new task and adds it to the sharedTaskList
+ 
     /**
      * Creates a new task and adds it to the shared task list.
      * This method handles any exceptions that may occur during task creation.
@@ -102,7 +101,7 @@ public class App {
             logger.warning("An error occurred while creating a new task: " + e.getMessage());
         }
     }
-    //  this method allows the user to prioritize a task
+ 
     /**
      * Allows the user to prioritize a task.
      * The method handles the user's choice of task to prioritize.
@@ -120,7 +119,7 @@ public class App {
             logger.info("No task selected for prioritization.");
         }
     }
-    //  this method allows the user to manage the duration of a task
+    
     /**
      * Allows the user to manage the duration of a task.
      * The method handles the user's choice of task to manage.
@@ -136,7 +135,7 @@ public class App {
             logger.info("No task selected for managing.");
         }
     }
-    //  this method allows the user to update the duration of a task
+ 
     /**
      * Allows the user to update the duration of a task.
      * The method prompts the user for the new start and end dates, start and end times, and interval.
@@ -159,7 +158,7 @@ public class App {
             shouldContinueEditing = !ScannerWrapper.nextLine().equalsIgnoreCase("Q");
         } while (shouldContinueEditing);
     }
-    //  this method prompts the user for input and handles the input
+ 
     /**
      * Prompts the user for input and handles the input.
      *
@@ -182,7 +181,7 @@ public class App {
         NamedTypedValue<T> input = InputHandler.getUserInput(prompt, type);
         return handleInput(input, type);
     }
-    //  this method gets the value of a field from a task object using reflection
+  
     /**
      * Gets the value of a field from a task object using reflection.
      *
@@ -202,7 +201,7 @@ public class App {
         }
     }
 
-    //  this method handles the user's input
+ 
     /**
      * Handles the user's input.
      *
@@ -219,7 +218,7 @@ public class App {
         } 
         return input.getValue();
     }
-    //  this method gets the default value for a type
+   
     /**
      * Gets the default value for a type.
      *
