@@ -1,8 +1,7 @@
 # Task Management
 
 ## Introduction
-This is a simple Task Management application built with Java and Maven.
-
+Welcome to our Task Management application! This tool is designed to help you manage projects from start to finish, making it easier to turn ideas into fully realized products. Whether you’re brainstorming, designing, or building, this application provides a structured workflow to keep everything organized and on track. Our goal is to make the process seamless so you can focus on what matters most—bringing your ideas to life!
 
 ## Key Features
 
